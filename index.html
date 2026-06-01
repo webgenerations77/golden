@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Chuck & Sue Hepfer – 50th Anniversary Party Planner</title>
+<style>
+:root{--gold:#C9A84C;--gold-light:#F5E6C0;--gold-dark:#8B6914;--cream:#FBF7EF;--white:#FFFFFF;--text:#2C2416;--text-muted:#7A6A4F;--border:#E8D9B5;--success:#3B6D11;--success-bg:#EAF3DE;--danger:#A32D2D;--danger-bg:#FCEBEB;--info:#185FA5;--info-bg:#E6F1FB;--radius:12px;--radius-sm:8px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--cream);color:var(--text);min-height:100vh;font-size:16px;}
+
+.app-header{background:linear-gradient(135deg,#2C2416 0%,#4A3820 50%,#2C2416 100%);color:var(--gold-light);padding:1.2rem 1rem 0.8rem;text-align:center;position:relative;overflow:hidden;}
+.app-header::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(201,168,76,0.04) 20px,rgba(201,168,76,0.04) 40px);}
+.header-badge{display:inline-block;background:var(--gold);color:#2C2416;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:3px 12px;border-radius:20px;margin-bottom:6px;font-family:'Helvetica Neue',sans-serif;font-weight:700;position:relative;}
+.header-title{font-size:1.5rem;font-weight:normal;line-height:1.2;position:relative;}
+.header-title em{color:var(--gold);font-style:italic;}
+.header-sub{font-family:'Helvetica Neue',sans-serif;font-size:12px;color:rgba(245,230,192,0.75);margin-top:4px;position:relative;}
+.header-details{font-family:'Helvetica Neue',sans-serif;font-size:11px;color:var(--gold);margin-top:3px;position:relative;letter-spacing:0.5px;}
+.header-divider{display:flex;align-items:center;gap:8px;margin:8px 0 0;position:relative;}
+.header-divider::before,.header-divider::after{content:'';flex:1;height:1px;background:rgba(201,168,76,0.35);}
+.header-divider span{color:var(--gold);font-size:14px;}
+
+/* TOP BACK BAR — shown on all non-home screens */
+.back-bar{display:none;align-items:center;gap:10px;background:#2C2416;padding:10px 14px;border-bottom:2px solid var(--gold);}
+.back-bar.visible{display:flex;}
+.back-btn{display:flex;align-items:center;gap:6px;color:var(--gold);font-family:'Helvetica Neue',sans-serif;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;background:none;border:none;padding:0;}
+.back-btn:active{opacity:0.7;}
+.back-bar-title{color:var(--gold-light);font-family:'Helvetica Neue',sans-serif;font-size:13px;opacity:0.75;margin-left:2px;}
+
+/* HOME NAV GRID */
+.nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;}
+.nav-btn{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent;box-shadow:0 2px 8px rgba(0,0,0,0.06);user-select:none;}
+.nav-btn:active{transform:scale(0.96);background:var(--gold-light);}
+.nav-btn:hover{border-color:var(--gold);background:var(--gold-light);}
+.nav-btn-icon{font-size:28px;margin-bottom:6px;display:block;}
+.nav-btn-label{font-family:'Helvetica Neue',sans-serif;font-size:13px;font-weight:700;color:var(--text);display:block;margin-bottom:3px;}
+.nav-btn-hint{font-family:'Helvetica Neue',sans-serif;font-size:11px;color:var(--text-muted);display:block;line-height:1.3;}
+
+.content{padding:0.9rem;max-width:700px;margin:0 auto;}
+.section{display:none;}
+.section.active{display:block;}
+
+.loading-overlay{position:fixed;inset:0;background:rgba(44,36,22,0.85);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--gold-light);}
+.loading-spinner{width:36px;height:36px;border:3px solid rgba(201,168,76,0.3);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-family:'Helvetica Neue',sans-serif;font-size:14px;color:rgba(245,230,192,0.8);}
+
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:0.9rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.card-title{font-family:'Helvetica Neue',sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold-dark);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.card-title span{font-size:15px;}
+
+label{display:block;font-family:'Helvetica Neue',sans-serif;font-size:11px;color:var(--text-muted);margin-bottom:3px;margin-top:10px;text-transform:uppercase;letter-spacing:0.4px;}
+input[type=text],input[type=date],input[type=number],select,textarea{width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:Georgia,serif;font-size:14px;color:var(--text);background:var(--cream);outline:none;transition:border-color 0.2s;-webkit-appearance:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);}
+textarea{resize:vertical;min-height:70px;line-height:1.5;}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A6A4F' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:32px;}
+
+.btn{display:inline-flex;align-items:center;gap:5px;padding:9px 16px;border-radius:var(--radius-sm);font-family:'Helvetica Neue',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
+.btn:active{transform:scale(0.97);}
+.btn-gold{background:var(--gold);color:#2C2416;}
+.btn-gold:hover{background:#b8922e;}
+.btn-green{background:var(--success-bg);color:var(--success);border:1.5px solid #C0DD97;}
+.btn-green:hover{background:#C0DD97;}
+.btn-outline{background:transparent;color:var(--gold-dark);border:1.5px solid var(--border);}
+.btn-outline:hover{background:var(--gold-light);}
+.btn-danger{background:transparent;color:var(--danger);border:1.5px solid #F7C1C1;font-size:11px;padding:4px 10px;}
+.btn-sm{padding:5px 11px;font-size:11px;}
+.btn-block{width:100%;justify-content:center;}
+
+.badge{display:inline-block;font-family:'Helvetica Neue',sans-serif;font-size:10px;font-weight:600;padding:2px 9px;border-radius:20px;}
+.badge-pending{background:#FFF3CD;color:#664D03;}
+.badge-confirmed{background:var(--success-bg);color:var(--success);}
+.badge-booked{background:var(--info-bg);color:var(--info);}
+.badge-approved{background:var(--success-bg);color:var(--success);border:1px solid #C0DD97;}
+.badge-cancelled{background:var(--danger-bg);color:var(--danger);}
+.badge-gold{background:var(--gold-light);color:var(--gold-dark);}
+
+.owner-tag{display:inline-block;font-family:'Helvetica Neue',sans-serif;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
+.owner-cindy{background:#E6F1FB;color:#185FA5;}
+.owner-sue{background:#FBEAF0;color:#993556;}
+.owner-corey{background:#EAF3DE;color:#3B6D11;}
+.owner-all{background:#F5E6C0;color:#8B6914;}
+
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0.9rem;}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;}
+.stat-number{font-size:24px;font-weight:bold;color:var(--gold-dark);line-height:1;}
+.stat-label{font-family:'Helvetica Neue',sans-serif;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.4px;margin-top:3px;}
+.stat-icon{font-size:18px;margin-bottom:3px;}
+
+.progress-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:4px;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),#E8C46A);border-radius:3px;transition:width 0.4s ease;}
+
+/* VENUE / VENDOR CARDS */
+.vcard{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:10px;background:var(--white);transition:border-color 0.2s;}
+.vcard.approved{border-color:var(--success);background:#F4FBF0;}
+.vcard-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+.vcard-name{font-weight:bold;font-size:15px;line-height:1.2;flex:1;}
+.vcard-body{margin-top:8px;font-family:'Helvetica Neue',sans-serif;font-size:12px;color:var(--text-muted);line-height:1.6;}
+.vcard-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.vcard-expand{display:none;}
+.vcard-expand.open{display:block;}
+
+/* TASK */
+.task-item{display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid var(--border);}
+.task-item:last-child{border-bottom:none;}
+.task-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:2px;-webkit-tap-highlight-color:transparent;}
+.task-check.done{background:var(--gold);border-color:var(--gold);color:white;}
+.task-name{font-size:14px;line-height:1.3;}
+.task-name.done{color:var(--text-muted);text-decoration:line-through;}
+.task-meta{font-family:'Helvetica Neue',sans-serif;font-size:10px;color:var(--text-muted);margin-top:2px;}
+.task-edit-form{background:var(--cream);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;margin-top:6px;}
+
+/* GUEST */
+.guest-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);}
+.guest-item:last-child{border-bottom:none;}
+.guest-avatar{width:34px;height:34px;border-radius:50%;background:var(--gold-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;color:var(--gold-dark);flex-shrink:0;font-family:'Helvetica Neue',sans-serif;}
+
+/* NOTE */
+.note-item{border-left:3px solid var(--gold);padding:7px 10px;margin-bottom:8px;background:var(--cream);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.note-meta{font-family:'Helvetica Neue',sans-serif;font-size:10px;color:var(--text-muted);margin-top:3px;}
+
+/* BUDGET */
+.budget-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);}
+.budget-row:last-child{border-bottom:none;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:100;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--white);border-radius:var(--radius) var(--radius) 0 0;padding:1.1rem;width:100%;max-width:700px;max-height:88vh;overflow-y:auto;animation:slideUp 0.22s ease;}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.9rem;}
+.modal-title{font-size:1rem;font-weight:bold;}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);padding:4px;}
+
+.sync-bar{background:var(--gold-light);border:1px solid var(--gold);border-radius:var(--radius-sm);padding:9px 12px;font-family:'Helvetica Neue',sans-serif;font-size:12px;color:var(--gold-dark);margin-bottom:0.9rem;display:flex;align-items:center;gap:8px;}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0;}
+.sync-dot.live{background:#3B6D11;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+.inner-tabs{display:flex;gap:5px;margin-bottom:0.9rem;flex-wrap:wrap;}
+.inner-tab{padding:5px 12px;border-radius:20px;font-family:'Helvetica Neue',sans-serif;font-size:11px;border:1px solid var(--border);cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
+.inner-tab.active{background:var(--gold);color:#2C2416;border-color:var(--gold);font-weight:600;}
+
+.resp-banner{border-radius:var(--radius-sm);padding:8px 12px;font-family:'Helvetica Neue',sans-serif;font-size:12px;margin-bottom:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.resp-cindy{background:#E6F1FB;color:#185FA5;border:1px solid #B5D4F4;}
+.resp-sue{background:#FBEAF0;color:#993556;border:1px solid #F4C0D1;}
+.resp-corey{background:#EAF3DE;color:#3B6D11;border:1px solid #C0DD97;}
+
+.empty{text-align:center;padding:1.5rem 1rem;color:var(--text-muted);}
+.empty-icon{font-size:30px;margin-bottom:6px;}
+.empty-text{font-family:'Helvetica Neue',sans-serif;font-size:13px;line-height:1.5;}
+.divider{border:none;border-top:1px solid var(--border);margin:10px 0;}
+.text-muted{color:var(--text-muted);font-family:'Helvetica Neue',sans-serif;font-size:12px;}
+.text-gold{color:var(--gold-dark);}
+.saved-flash{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#2C2416;color:var(--gold);font-family:'Helvetica Neue',sans-serif;font-size:12px;padding:8px 18px;border-radius:20px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:300;}
+.saved-flash.show{opacity:1;}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.organizer-card{border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;border:1px solid var(--border);}
+
+@media(min-width:600px){
+.stat-grid{grid-template-columns:repeat(4,1fr);}
+.app-header .header-title{font-size:1.8rem;}
+.modal{border-radius:var(--radius);margin-bottom:2rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading party planner…</div>
+</div>
+<div class="saved-flash" id="savedFlash">✓ Saved for everyone</div>
+
+<div class="app-header">
+  <div class="header-badge">50th Anniversary · Party Details</div>
+  <h1 class="header-title"><em>Chuck &amp; Sue Hepfer</em></h1>
+  <p class="header-sub">Golden Anniversary Celebration</p>
+  <p class="header-details">📅 Saturday, November 7, 2026 · 2:00 PM – 5:00 PM · Up to 50 Guests</p>
+  <p class="header-details" id="headerLocation" style="margin-top:2px;">📍 Venue: TBD</p>
+  <div class="header-divider"><span>✦</span></div>
+</div>
+
+<!-- BACK BAR — shown on all non-home sections -->
+<div class="back-bar" id="backBar">
+  <button class="back-btn" onclick="switchSection('dashboard')">
+    <span style="font-size:18px;">←</span> Home
+  </button>
+  <span class="back-bar-title" id="backBarTitle"></span>
+</div>
+
+<div class="content">
+
+<!-- ══════════════════════════ DASHBOARD ══════════════════════════ -->
+<div class="section active" id="section-dashboard">
+  <div class="sync-bar">
+    <span>🌐</span>
+    <div style="flex:1"><strong>Live shared planner</strong> — all changes save instantly for everyone.
+      <div id="syncStatus" style="margin-top:2px;opacity:0.8">Connecting…</div>
+    </div>
+    <div class="sync-dot" id="syncDot"></div>
+  </div>
+
+  <!-- NAV GRID -->
+  <div class="nav-grid">
+    <div class="nav-btn" onclick="switchSection('resp')">
+      <span class="nav-btn-icon">👤</span>
+      <span class="nav-btn-label">Roles</span>
+      <span class="nav-btn-hint" id="hint-resp">Organizers &amp; responsibilities</span>
+    </div>
+    <div class="nav-btn" onclick="switchSection('venue')">
+      <span class="nav-btn-icon">📍</span>
+      <span class="nav-btn-label">Venues</span>
+      <span class="nav-btn-hint" id="hint-venue">TBD</span>
+    </div>
+    <div class="nav-btn" onclick="switchSection('guests')">
+      <span class="nav-btn-icon">👥</span>
+      <span class="nav-btn-label">Guests</span>
+      <span class="nav-btn-hint" id="hint-guests">0 of 50 added</span>
+    </div>
+    <div class="nav-btn" onclick="switchSection('menu')">
+      <span class="nav-btn-icon">🍽️</span>
+      <span class="nav-btn-label">Menu</span>
+      <span class="nav-btn-hint" id="hint-menu">Food · Bar · Cake</span>
+    </div>
+    <div class="nav-btn" onclick="switchSection('vendors')">
+      <span class="nav-btn-icon">🎵</span>
+      <span class="nav-btn-label">Vendors</span>
+      <span class="nav-btn-hint" id="hint-vendors">DJ · Photo · Decor · Fun</span>
+    </div>
+    <div class="nav-btn" onclick="switchSection('budget')">
+      <span class="nav-btn-icon">💰</span>
+      <span class="nav-btn-label">Budget</span>
+      <span class="nav-btn-hint" id="hint-budget">$0 estimated</span>
+    </div>
+    <div class="nav-btn" onclick="switchSection('tasks')">
+      <span class="nav-btn-icon">✅</span>
+      <span class="nav-btn-label">Tasks</span>
+      <span class="nav-btn-hint" id="hint-tasks">0% complete</span>
+    </div>
+    <div class="nav-btn" onclick="switchSection('notes')">
+      <span class="nav-btn-icon">📝</span>
+      <span class="nav-btn-label">Notes</span>
+      <span class="nav-btn-hint" id="hint-notes">Family notes &amp; updates</span>
+    </div>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-number" id="stat-days">—</div><div class="stat-label">Days Away</div></div>
+    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-number" id="stat-guests">0</div><div class="stat-label">Guests</div></div>
+    <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-number" id="stat-tasks">0%</div><div class="stat-label">Tasks Done</div></div>
+    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-number" id="stat-budget">$0</div><div class="stat-label">Budgeted</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>📋</span> Planning Status</div>
+    <div id="dashboardStatus"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ ROLES ══════════════════════════ -->
+<div class="section" id="section-resp">
+  <div class="card">
+    <div class="section-header">
+      <div class="card-title" style="margin:0"><span>👤</span> Organizer Responsibilities</div>
+      <button class="btn btn-gold btn-sm" onclick="openModal('orgModal')">+ Add Person</button>
+    </div>
+    <p class="text-muted" style="margin-bottom:12px;">Tap any card to edit name or responsibilities. These names appear throughout the planner.</p>
+    <div id="orgList"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ VENUES ══════════════════════════ -->
+<div class="section" id="section-venue">
+  <div id="venueRespBanner"></div>
+  <div class="card">
+    <div class="section-header">
+      <div class="card-title" style="margin:0"><span>📍</span> Venue Options</div>
+      <button class="btn btn-gold btn-sm" onclick="openModal('venueModal')">+ Add Venue</button>
+    </div>
+    <p class="text-muted" style="margin-bottom:12px;">Add venues as you research. Mark one <strong style="color:var(--success)">Approved</strong> when you've decided.</p>
+    <div id="venueList"><div class="empty"><div class="empty-icon">📍</div><div class="empty-text">No venues added yet.<br>Tap + Add Venue to start tracking options.</div></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>🔍</span> Suggested Venues Near Milton, DE</div>
+    <p class="text-muted" style="margin-bottom:10px;">Within ~90 min north · prefer closest to Milton</p>
+    <div class="vcard"><div class="vcard-header"><div class="vcard-name">Baywood Greens Event Center</div><span class="badge badge-gold">~30 min</span></div><div class="vcard-body">Long Neck, DE · Scenic golf &amp; event venue, full catering staff, beautiful grounds, ample parking. Great for 50-guest indoor reception.</div></div>
+    <div class="vcard"><div class="vcard-header"><div class="vcard-name">Bear Trap Dunes Clubhouse</div><span class="badge badge-gold">~25 min</span></div><div class="vcard-body">Ocean View, DE · Golf club banquet hall, elegant setting, catering available, easy access from Rt 26.</div></div>
+    <div class="vcard"><div class="vcard-header"><div class="vcard-name">Dogfish Head Brewery Events</div><span class="badge badge-gold">~15 min</span></div><div class="vcard-body">Milton/Lewes, DE · Right in their backyard. Private event spaces, unique setting, in-house food &amp; drink.</div></div>
+    <div class="vcard"><div class="vcard-header"><div class="vcard-name">Kings Creek Country Club</div><span class="badge badge-gold">~20 min</span></div><div class="vcard-body">Rehoboth Beach, DE · Private club event space, catering included, elegant banquet room, good A/V.</div></div>
+    <div class="vcard"><div class="vcard-header"><div class="vcard-name">Lewes Waterfront Venues</div><span class="badge badge-gold">~20 min</span></div><div class="vcard-body">Lewes, DE · Several private dining/event rooms in charming waterfront Lewes. Various sizes available.</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ GUESTS ══════════════════════════ -->
+<div class="section" id="section-guests">
+  <div id="guestRespBanner"></div>
+  <div class="card">
+    <div class="section-header">
+      <div class="card-title" style="margin:0">👥 Guest List <span style="font-size:10px;color:var(--text-muted);font-weight:normal">(max 50)</span></div>
+      <button class="btn btn-gold btn-sm" onclick="openModal('guestModal')">+ Add</button>
+    </div>
+    <div id="guestSummary" class="text-muted" style="margin-bottom:10px;"></div>
+    <div id="guestList"><div class="empty"><div class="empty-icon">👥</div><div class="empty-text">No guests yet.</div></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>📧</span> E-Vite</div>
+    <label>Platform</label>
+    <select id="evitePlatform" onchange="debounce('evite')">
+      <option value="">— Select —</option><option>Evite.com</option><option>Paperless Post</option><option>Greenvelope</option><option>Partiful</option><option>Zola</option><option>Other</option>
+    </select>
+    <label>E-Vite Link</label><input type="text" id="eviteLink" placeholder="https://…" oninput="debounce('evite')">
+    <label>Send Date</label><input type="date" id="eviteSendDate" oninput="debounce('evite')">
+    <label>RSVP Deadline</label><input type="date" id="eviteRsvpDeadline" oninput="debounce('evite')">
+    <label>Notes</label><textarea id="eviteNotes" placeholder="Wording, dress code, instructions…" style="min-height:55px" oninput="debounce('evite')"></textarea>
+  </div>
+</div>
+
+<!-- ══════════════════════════ MENU ══════════════════════════ -->
+<div class="section" id="section-menu">
+  <div id="menuRespBanner"></div>
+  <div class="inner-tabs">
+    <div class="inner-tab active" onclick="switchPanel('menu',['food','bar','cake'],0)">🍽 Food</div>
+    <div class="inner-tab" onclick="switchPanel('menu',['food','bar','cake'],1)">🍸 Bar</div>
+    <div class="inner-tab" onclick="switchPanel('menu',['food','bar','cake'],2)">🎂 Cake</div>
+  </div>
+  <div id="menu-food-panel">
+    <div class="card">
+      <div class="card-title"><span>🍽️</span> Food &amp; Catering</div>
+      <label>Service Style</label>
+      <select id="cateringStyle" onchange="debounce('menu')"><option value="">— Select —</option><option>Buffet</option><option>Plated / Sit-Down</option><option>Food Stations</option><option>Cocktail / Heavy Hors d'oeuvres</option><option>Family Style</option><option>Self-Catered</option></select>
+      <label>Caterer Name</label><input type="text" id="catererName" placeholder="Company or individual" oninput="debounce('menu')">
+      <label>Contact</label><input type="text" id="catererContact" placeholder="Phone or email" oninput="debounce('menu')">
+      <label>Cost Estimate</label><input type="text" id="catererCost" placeholder="e.g. $38/person" oninput="debounce('menu')">
+      <label>Dietary Notes</label><textarea id="dietaryNotes" placeholder="Known allergies or restrictions…" style="min-height:55px" oninput="debounce('menu')"></textarea>
+      <label>Appetizers</label><textarea id="menuAppetizers" placeholder="e.g. Shrimp cocktail, bruschetta…" style="min-height:55px" oninput="debounce('menu')"></textarea>
+      <label>Main Dishes</label><textarea id="menuMains" placeholder="e.g. Roasted chicken, salmon…" style="min-height:55px" oninput="debounce('menu')"></textarea>
+      <label>Sides &amp; Salads</label><textarea id="menuSides" placeholder="e.g. Roasted veg, mashed potatoes…" style="min-height:55px" oninput="debounce('menu')"></textarea>
+      <label>Other Desserts</label><textarea id="menuDesserts" placeholder="e.g. Cookie table, mini pastries…" style="min-height:55px" oninput="debounce('menu')"></textarea>
+    </div>
+  </div>
+  <div id="menu-bar-panel" style="display:none">
+    <div class="card">
+      <div class="card-title"><span>🍸</span> Bar &amp; Beverages</div>
+      <p class="text-muted" style="margin-bottom:10px;">Afternoon event (2–5 PM) — lighter bar typical.</p>
+      <label>Bar Type</label>
+      <select id="barType" onchange="debounce('menu')"><option value="">— Select —</option><option>Open Bar (full)</option><option>Beer &amp; Wine Only</option><option>Beer, Wine + Signature Cocktail</option><option>Champagne Toast Only</option><option>No Alcohol</option></select>
+      <label>Bartender</label>
+      <select id="bartenderNeeded" onchange="debounce('menu')"><option value="">— Select —</option><option>Yes – hiring bartender</option><option>Venue provides</option><option>Self-serve</option></select>
+      <label>Bartender Name / Contact / Cost</label><input type="text" id="bartenderInfo" placeholder="e.g. Jane Smith · $200 + tip" oninput="debounce('menu')">
+      <label>Beer</label><textarea id="beerList" placeholder="e.g. Dogfish Head 60 Min, Yuengling, Bud Light…" style="min-height:55px" oninput="debounce('menu')"></textarea>
+      <label>Wine</label><textarea id="wineList" placeholder="e.g. Pinot Grigio, Cab, Prosecco for toasts…" style="min-height:55px" oninput="debounce('menu')"></textarea>
+      <label>Signature Cocktail</label><input type="text" id="signatureCocktail" placeholder='e.g. "The Golden 50" – champagne &amp; elderflower' oninput="debounce('menu')">
+      <label>Non-Alcoholic</label><textarea id="naOptions" placeholder="Sparkling water, lemonade, iced tea, sodas…" style="min-height:55px" oninput="debounce('menu')"></textarea>
+      <label>Bar Budget</label><input type="text" id="barCost" placeholder="e.g. $600 for supplies" oninput="debounce('menu')">
+    </div>
+  </div>
+  <div id="menu-cake-panel" style="display:none">
+    <div class="card">
+      <div class="card-title"><span>🎂</span> Anniversary Cake</div>
+      <label>Bakery</label><input type="text" id="bakeryName" placeholder="Bakery or baker" oninput="debounce('menu')">
+      <label>Contact</label><input type="text" id="bakeryContact" placeholder="Phone or email" oninput="debounce('menu')">
+      <label>Description &amp; Design</label><textarea id="cakeDesc" placeholder="Flavors, tiers, gold decorations, '50' topper…" style="min-height:65px" oninput="debounce('menu')"></textarea>
+      <label>Servings</label><input type="number" id="cakeServings" placeholder="e.g. 55" oninput="debounce('menu')">
+      <label>Inscription</label><input type="text" id="cakeInscription" placeholder='e.g. "Happy 50th Chuck &amp; Sue"' oninput="debounce('menu')">
+      <label>Cost</label><input type="text" id="cakeCost" placeholder="e.g. $280" oninput="debounce('menu')">
+      <label>Pickup / Delivery</label><input type="text" id="cakeDelivery" placeholder="e.g. Nov 6 at 3 PM" oninput="debounce('menu')">
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ VENDORS ══════════════════════════ -->
+<div class="section" id="section-vendors">
+  <div class="inner-tabs">
+    <div class="inner-tab active" onclick="switchPanel('vendor',['dj','photo','decor','fun'],0)">🎵 DJ</div>
+    <div class="inner-tab" onclick="switchPanel('vendor',['dj','photo','decor','fun'],1)">📸 Photo</div>
+    <div class="inner-tab" onclick="switchPanel('vendor',['dj','photo','decor','fun'],2)">🌸 Decor</div>
+    <div class="inner-tab" onclick="switchPanel('vendor',['dj','photo','decor','fun'],3)">🎮 Fun</div>
+  </div>
+
+  <div id="vendor-dj-panel">
+    <div id="djRespBanner"></div>
+    <div class="card">
+      <div class="section-header">
+        <div class="card-title" style="margin:0"><span>🎵</span> DJ / Music Options</div>
+        <button class="btn btn-gold btn-sm" onclick="openVendorModal('dj')">+ Add</button>
+      </div>
+      <p class="text-muted" style="margin-bottom:10px;">Add multiple options, then approve the one you book.</p>
+      <div id="vendorList-dj"><div class="empty"><div class="empty-icon">🎵</div><div class="empty-text">No DJ options added yet.</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>🎶</span> Music Preferences</div>
+      <label>Must-Play Songs / Artists</label><textarea id="djSongs" placeholder="Songs Chuck &amp; Sue love, era, genres…" style="min-height:65px" oninput="debounce('vendors')"></textarea>
+      <label>Do-Not-Play</label><textarea id="djNoPlay" placeholder="Songs or genres to avoid…" style="min-height:55px" oninput="debounce('vendors')"></textarea>
+      <label>Special Moments</label><textarea id="djSpecial" placeholder="Anniversary waltz, grand entrance, toasts…" style="min-height:65px" oninput="debounce('vendors')"></textarea>
+    </div>
+  </div>
+
+  <div id="vendor-photo-panel" style="display:none">
+    <div class="card">
+      <div class="section-header">
+        <div class="card-title" style="margin:0"><span>📸</span> Photography Options</div>
+        <button class="btn btn-gold btn-sm" onclick="openVendorModal('photo')">+ Add</button>
+      </div>
+      <p class="text-muted" style="margin-bottom:10px;">Add photographers to compare, then approve.</p>
+      <div id="vendorList-photo"><div class="empty"><div class="empty-icon">📸</div><div class="empty-text">No photographers added yet.</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>📷</span> Shot Preferences</div>
+      <label>Must-Have Shots</label><textarea id="photoShots" placeholder="Full family, couple portrait, grandkids, candids, cake cutting…" style="min-height:65px" oninput="debounce('vendors')"></textarea>
+      <label>Video?</label>
+      <select id="videoNeeded" onchange="debounce('vendors')"><option value="">— Select —</option><option>Yes – video coverage</option><option>Photo only</option><option>No photographer needed</option></select>
+    </div>
+  </div>
+
+  <div id="vendor-decor-panel" style="display:none">
+    <div id="decorRespBanner"></div>
+    <div class="card">
+      <div class="section-header">
+        <div class="card-title" style="margin:0"><span>🌸</span> Florist / Decorator Options</div>
+        <button class="btn btn-gold btn-sm" onclick="openVendorModal('decor')">+ Add</button>
+      </div>
+      <p class="text-muted" style="margin-bottom:10px;">Add florists or decorators to compare, then approve.</p>
+      <div id="vendorList-decor"><div class="empty"><div class="empty-icon">🌸</div><div class="empty-text">No decorators added yet.</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>🎨</span> Decor Details</div>
+      <label>Color Scheme / Theme</label><input type="text" id="decorTheme" placeholder="e.g. Gold &amp; ivory, garden party…" oninput="debounce('vendors')">
+      <label>Number of Tables</label><input type="number" id="tableCount" placeholder="e.g. 8" oninput="debounce('vendors')">
+      <label>Decor Items Needed</label><textarea id="decorItems" placeholder="Centerpieces, backdrop, candles, balloons, linens, signage, memory table…" style="min-height:80px" oninput="debounce('vendors')"></textarea>
+      <label>DIY vs. Rented vs. Purchased</label><textarea id="decorDIY" placeholder="What's being made, rented, or bought…" style="min-height:65px" oninput="debounce('vendors')"></textarea>
+      <label>Setup Time</label><input type="text" id="decorSetup" placeholder="e.g. 11 AM – 1 PM day-of" oninput="debounce('vendors')">
+    </div>
+  </div>
+
+  <div id="vendor-fun-panel" style="display:none">
+    <div id="funRespBanner"></div>
+    <div class="card">
+      <div class="card-title"><span>🎮</span> Entertainment &amp; Games</div>
+      <label>Activities Planned</label><textarea id="gamesPlanned" placeholder="Photo booth, trivia about Chuck &amp; Sue, anniversary bingo, lawn games…" style="min-height:75px" oninput="debounce('vendors')"></textarea>
+      <label>Photo Booth</label>
+      <select id="photoBooth" onchange="debounce('vendors')"><option value="">— Select —</option><option>Renting a photo booth</option><option>DIY corner with props</option><option>No photo booth</option></select>
+      <label>Photo Booth Cost</label><input type="text" id="photoBoothCost" placeholder="e.g. $275 for 3 hrs with prints" oninput="debounce('vendors')">
+      <label>Toasts &amp; Speeches Order</label><textarea id="speechPlan" placeholder="Who speaks and in what order…" style="min-height:65px" oninput="debounce('vendors')"></textarea>
+      <label>Couple Slideshow / Video</label>
+      <select id="slideshowPlan" onchange="debounce('vendors')"><option value="">— Select —</option><option>Yes – creating a slideshow</option><option>No slideshow</option><option>TBD</option></select>
+      <label>Slideshow Creator</label><input type="text" id="slideshowWho" placeholder="Name of person responsible" oninput="debounce('vendors')">
+      <label>Memory Jar / Guest Book</label>
+      <select id="memoryJar" onchange="debounce('vendors')"><option value="">— Select —</option><option>Memory Jar</option><option>Guest Book</option><option>Both</option><option>Neither</option></select>
+      <label>Run of Show</label><textarea id="runOfShow" placeholder="2:00 Doors open · 2:15 Couple arrives · 2:30 Toasts · 3:00 Cake cutting…" style="min-height:90px" oninput="debounce('vendors')"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ BUDGET ══════════════════════════ -->
+<div class="section" id="section-budget">
+  <div class="card">
+    <div class="card-title"><span>💰</span> Budget Overview</div>
+    <label>Total Budget</label>
+    <input type="number" id="totalBudget" placeholder="e.g. 6000" oninput="debounce('budget');renderBudgetUI()">
+    <div style="margin-top:14px" id="budgetDisplay"></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>✏️</span> Edit Budget Lines</div>
+    <div id="budgetEdit"></div>
+    <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="addBudgetLine()">+ Add Category</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════ TASKS ══════════════════════════ -->
+<div class="section" id="section-tasks">
+  <div class="card">
+    <div class="section-header">
+      <div class="card-title" style="margin:0">✅ Task Checklist</div>
+      <button class="btn btn-gold btn-sm" onclick="openModal('taskModal')">+ Add</button>
+    </div>
+    <div style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;font-family:'Helvetica Neue',sans-serif;font-size:11px;color:var(--text-muted);margin-bottom:3px;">
+        <span id="taskProgressLabel">0 of 0 complete</span><span id="taskPct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="taskBar" style="width:0%"></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;">
+      <select id="taskFilterAssigned" onchange="renderTasks()" style="font-size:12px;padding:6px 8px;">
+        <option value="">👤 All People</option>
+      </select>
+      <select id="taskFilterCategory" onchange="renderTasks()" style="font-size:12px;padding:6px 8px;">
+        <option value="">🗂 All Categories</option>
+        <option>Venue</option><option>Catering</option><option>Bar</option><option>Music</option>
+        <option>Guests</option><option>Decor</option><option>Budget</option><option>Entertainment</option><option>General</option>
+      </select>
+      <select id="taskFilterDone" onchange="renderTasks()" style="font-size:12px;padding:6px 8px;grid-column:span 2;">
+        <option value="">All Tasks</option><option value="open">⬜ Open Only</option><option value="done">✅ Completed Only</option>
+      </select>
+    </div>
+    <div id="taskList"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ NOTES ══════════════════════════ -->
+<div class="section" id="section-notes">
+  <div class="card">
+    <div class="section-header">
+      <div class="card-title" style="margin:0">📝 Family Notes</div>
+      <button class="btn btn-gold btn-sm" onclick="openModal('noteModal')">+ Add</button>
+    </div>
+    <div id="notesList"><div class="empty"><div class="empty-icon">📝</div><div class="empty-text">No notes yet.</div></div></div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<!-- ═══ MODALS ═══ -->
+
+<!-- Venue Modal -->
+<div class="modal-overlay" id="venueModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="venueModalTitle">Add Venue</div><button class="modal-close" onclick="closeModal('venueModal')">✕</button></div>
+    <input type="hidden" id="venueEditId">
+    <label>Venue Name *</label><input type="text" id="v_name" placeholder="e.g. Baywood Greens">
+    <label>Address</label><input type="text" id="v_address" placeholder="Street, City, State">
+    <label>Contact Name</label><input type="text" id="v_contact" placeholder="Event coordinator">
+    <label>Phone / Email</label><input type="text" id="v_contactInfo" placeholder="Phone or email">
+    <label>Capacity</label><input type="number" id="v_capacity" placeholder="Max guests">
+    <label>Rental Fee</label><input type="text" id="v_cost" placeholder="e.g. $2,500">
+    <label>Indoor / Outdoor</label>
+    <select id="v_type"><option value="">— Select —</option><option>Indoor</option><option>Outdoor</option><option>Indoor + Outdoor</option></select>
+    <label>Catering Policy</label>
+    <select id="v_catering"><option value="">— Select —</option><option>In-house only</option><option>Approved vendors</option><option>Open – any caterer</option><option>Self-catering OK</option></select>
+    <label>Status</label>
+    <select id="v_status"><option value="researching">Researching</option><option value="contacted">Contacted</option><option value="touring">Site visit scheduled</option><option value="approved">✓ Approved / Booked</option><option value="declined">Not selected</option></select>
+    <label>Parking</label><input type="text" id="v_parking" placeholder="e.g. Free lot, 80 spaces">
+    <label>Deposit Status</label>
+    <select id="v_deposit"><option value="">—</option><option>Not paid</option><option>Partial deposit</option><option>Paid in full</option></select>
+    <label>Notes</label><textarea id="v_notes" placeholder="Setup time, A/V, tables included, restrictions…" style="min-height:65px"></textarea>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button class="btn btn-gold btn-block" onclick="saveVenueEntry()">Save Venue</button>
+    </div>
+  </div>
+</div>
+
+<!-- Vendor Modal -->
+<div class="modal-overlay" id="vendorModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="vendorModalTitle">Add Vendor</div><button class="modal-close" onclick="closeModal('vendorModal')">✕</button></div>
+    <input type="hidden" id="vendor_editId">
+    <input type="hidden" id="vendor_category">
+    <label>Name *</label><input type="text" id="vnd_name" placeholder="Company or person">
+    <label>Contact</label><input type="text" id="vnd_contact" placeholder="Phone or email">
+    <label>Cost / Package</label><input type="text" id="vnd_cost" placeholder="e.g. $600 for 3 hours">
+    <label>Hours / Coverage</label><input type="text" id="vnd_hours" placeholder="e.g. 2:00 PM – 5:00 PM">
+    <label>Status</label>
+    <select id="vnd_status"><option value="researching">Researching</option><option value="contacted">Contacted</option><option value="approved">✓ Approved / Booked</option><option value="declined">Not selected</option></select>
+    <label>Notes</label><textarea id="vnd_notes" placeholder="Details, pros/cons, special requests…" style="min-height:70px"></textarea>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button class="btn btn-gold btn-block" onclick="saveVendorEntry()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Organizer Modal -->
+<div class="modal-overlay" id="orgModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="orgModalTitle">Add Organizer</div><button class="modal-close" onclick="closeModal('orgModal')">✕</button></div>
+    <input type="hidden" id="org_editId">
+    <label>Name *</label><input type="text" id="org_name" placeholder="e.g. Cindy / Drew">
+    <label>Responsibilities</label><textarea id="org_resp" placeholder="e.g. Venue · Food &amp; Beverage · Entertainment" style="min-height:70px"></textarea>
+    <label>Color</label>
+    <select id="org_color">
+      <option value="cindy">Blue (Cindy/Drew)</option><option value="sue">Pink (Sue)</option><option value="corey">Green (Corey)</option><option value="all">Gold (General)</option>
+    </select>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button class="btn btn-gold btn-block" onclick="saveOrg()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Guest Modal -->
+<div class="modal-overlay" id="guestModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add Guest</div><button class="modal-close" onclick="closeModal('guestModal')">✕</button></div>
+    <label>Name(s)</label><input type="text" id="guestNameInput" placeholder="e.g. Tom &amp; Susan Johnson">
+    <label>Party Size</label><input type="number" id="guestSizeInput" value="1" min="1" max="6">
+    <label>RSVP Status</label>
+    <select id="guestRsvpInput"><option value="invited">Invited – awaiting RSVP</option><option value="yes">Yes – Attending</option><option value="no">No – Declined</option><option value="maybe">Maybe</option></select>
+    <label>Relationship</label><input type="text" id="guestRelInput" placeholder="Family, Friends, Neighbors…">
+    <label>Dietary Needs</label><input type="text" id="guestDietInput" placeholder="Vegetarian, gluten-free…">
+    <label>Notes</label><textarea id="guestNoteInput" style="min-height:55px" placeholder="Out of town? Plus-one? Special needs…"></textarea>
+    <button class="btn btn-gold btn-block" style="margin-top:14px" onclick="addGuest()">Add Guest</button>
+  </div>
+</div>
+
+<!-- Task Modal (add/edit) -->
+<div class="modal-overlay" id="taskModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="taskModalTitle">Add Task</div><button class="modal-close" onclick="closeModal('taskModal')">✕</button></div>
+    <input type="hidden" id="task_editId">
+    <label>Task *</label><input type="text" id="taskInput" placeholder="e.g. Book DJ, confirm caterer…">
+    <label>Assigned To</label>
+    <select id="taskAssigned"></select>
+    <label>Due Date</label><input type="date" id="taskDue">
+    <label>Category</label>
+    <select id="taskCategory">
+      <option>Venue</option><option>Catering</option><option>Bar</option><option>Music</option><option>Guests</option><option>Decor</option><option>Budget</option><option>Entertainment</option><option>General</option>
+    </select>
+    <label>Notes</label><textarea id="taskNotes" placeholder="Additional details…" style="min-height:55px"></textarea>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button class="btn btn-gold btn-block" onclick="saveTask()">Save Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- Note Modal -->
+<div class="modal-overlay" id="noteModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add Note</div><button class="modal-close" onclick="closeModal('noteModal')">✕</button></div>
+    <label>Posted By</label>
+    <select id="noteAuthor"></select>
+    <label>Note</label><textarea id="noteContent" style="min-height:100px" placeholder="Idea, decision, vendor call summary, reminder…"></textarea>
+    <button class="btn btn-gold btn-block" style="margin-top:14px" onclick="addNote()">Add Note</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// JSONBIN STORAGE — all data in one document
+// ══════════════════════════════════════════
+const JB_BIN   = '6a1dc28fa5160c15fd97c3c3';
+const JB_READ  = '$2a$10$FS1jjYCZydUARFZr8QcxdOMmnKtm1xmPNAB.xoNPrQGKDuc5F0u3.';
+const JB_WRITE = '$2a$10$nVmjEwLhwXLRrL88.zZ1s.ZCCzZ4igJKpPymaesgglCrFHi8.pYNe';
+const JB_URL   = `https://api.jsonbin.io/v3/b/${JB_BIN}`;
+
+async function jbLoad(){
+  const r=await fetch(JB_URL+'/latest',{headers:{'X-Access-Key':JB_READ,'X-Bin-Meta':'false'}});
+  if(!r.ok)throw new Error('JSONBin load: '+r.status);
+  return await r.json();
+}
+
+let _saving=false, _savePending=false;
+async function jbSave(){
+  if(_saving){_savePending=true;return;}
+  _saving=true; _savePending=false;
+  try{
+    const r=await fetch(JB_URL,{method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':JB_WRITE},
+      body:JSON.stringify(_s)});
+    if(!r.ok)throw new Error('JSONBin save: '+r.status);
+    flash();
+    if(_savePending)setTimeout(jbSave,300);
+  }catch(e){
+    console.error(e);
+    setSyncStatus('⚠ Save failed – check connection');
+  }finally{_saving=false;}
+}
+
+let _dbt={};
+function debounce(key,delay=900){clearTimeout(_dbt[key]);_dbt[key]=setTimeout(()=>{collectFields(key);jbSave();},delay);}
+function save(){jbSave();}  /* called by array mutations */
+function flash(){const el=document.getElementById('savedFlash');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800);}
+function setSyncStatus(msg){const el=document.getElementById('syncStatus');if(el)el.textContent=msg;}
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let _s={
+  orgs: defaultOrgs(),
+  venues: [],
+  vendors: {dj:[],photo:[],decor:[]},
+  menu: {},
+  vendors_prefs: {},
+  evite: {},
+  budget: {total:'',categories:defaultBudget()},
+  guests: [],
+  tasks: [],
+  notes: []
+};
+
+function defaultOrgs(){
+  return [
+    {id:'cindy',name:'Cindy / Drew',resp:'Venue · Food & Beverage · Entertainment',color:'cindy'},
+    {id:'sue',name:'Sue',resp:'Decorations',color:'sue'},
+    {id:'corey',name:'Corey',resp:'Guest List · E-Vites · Day-of Coordination',color:'corey'}
+  ];
+}
+function defaultBudget(){
+  return [{name:'Venue Rental',estimated:'',actual:''},{name:'Catering / Food',estimated:'',actual:''},{name:'Bar & Alcohol',estimated:'',actual:''},{name:'Bartender',estimated:'',actual:''},{name:'DJ / Music',estimated:'',actual:''},{name:'Photography',estimated:'',actual:''},{name:'Decorations',estimated:'',actual:''},{name:'Anniversary Cake',estimated:'',actual:''},{name:'Entertainment & Games',estimated:'',actual:''},{name:'E-Vites & Printing',estimated:'',actual:''},{name:'Miscellaneous',estimated:'',actual:''}];
+}
+function defaultTasks(){
+  const orgs=_s.orgs;
+  const n1=orgs[0]?.name||'Cindy/Drew', n2=orgs[1]?.name||'Sue', n3=orgs[2]?.name||'Corey';
+  return [
+    {id:uid(),text:'Set party date & confirm with parents',assigned:'All',due:'',category:'General',notes:'',done:false},
+    {id:uid(),text:'Set total budget split',assigned:'All',due:'',category:'Budget',notes:'',done:false},
+    {id:uid(),text:'Research & book venue',assigned:n1,due:'',category:'Venue',notes:'',done:false},
+    {id:uid(),text:'Finalize guest list (max 50)',assigned:n3,due:'',category:'Guests',notes:'',done:false},
+    {id:uid(),text:'Choose e-vite platform & design invitation',assigned:n3,due:'',category:'Guests',notes:'',done:false},
+    {id:uid(),text:'Send e-vites',assigned:n3,due:'',category:'Guests',notes:'',done:false},
+    {id:uid(),text:'Book DJ / music',assigned:n1,due:'',category:'Music',notes:'',done:false},
+    {id:uid(),text:'Arrange catering',assigned:n1,due:'',category:'Catering',notes:'',done:false},
+    {id:uid(),text:'Plan bar & hire bartender if needed',assigned:n1,due:'',category:'Bar',notes:'',done:false},
+    {id:uid(),text:'Order anniversary cake',assigned:n1,due:'',category:'Catering',notes:'',done:false},
+    {id:uid(),text:'Plan decor – color scheme & item list',assigned:n2,due:'',category:'Decor',notes:'',done:false},
+    {id:uid(),text:'Order / purchase decor items',assigned:n2,due:'',category:'Decor',notes:'',done:false},
+    {id:uid(),text:'Collect family photos for slideshow',assigned:'All',due:'',category:'Entertainment',notes:'',done:false},
+    {id:uid(),text:'Create couple photo slideshow',assigned:n1,due:'',category:'Entertainment',notes:'',done:false},
+    {id:uid(),text:'Plan games, activities & run-of-show',assigned:n1,due:'',category:'Entertainment',notes:'',done:false},
+    {id:uid(),text:'Track RSVPs & follow up',assigned:n3,due:'',category:'Guests',notes:'',done:false},
+    {id:uid(),text:'Confirm final headcount with venue & caterer',assigned:n1,due:'',category:'Catering',notes:'',done:false},
+    {id:uid(),text:'Day-of decor setup',assigned:n2,due:'2026-11-07',category:'Decor',notes:'',done:false},
+    {id:uid(),text:'Day-of coordination & timeline',assigned:n3,due:'2026-11-07',category:'General',notes:'',done:false},
+  ];
+}
+function uid(){return Math.random().toString(36).slice(2,9);}
+
+// ══════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════
+const sectionTitles={dashboard:'Home',resp:'Roles',venue:'Venues',guests:'Guests',menu:'Menu',vendors:'Vendors',budget:'Budget',tasks:'Tasks',notes:'Notes'};
+
+function switchSection(name){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('section-'+name).classList.add('active');
+  // back bar
+  const bar=document.getElementById('backBar');
+  if(name==='dashboard'){bar.classList.remove('visible');}
+  else{bar.classList.add('visible');document.getElementById('backBarTitle').textContent=sectionTitles[name]||'';}
+  if(name==='dashboard')updateDashboard();
+  if(name==='resp')renderOrgs();
+  if(name==='venue'){renderVenues();renderRespBanner('venue');}
+  if(name==='guests'){renderGuests();renderRespBanner('guest');}
+  if(name==='menu')renderRespBanner('menu');
+  if(name==='vendors'){renderAllVendors();renderRespBanner('vendor');}
+  if(name==='budget')renderBudgetUI();
+  if(name==='tasks'){renderTasks();populateOrgDropdowns();}
+  if(name==='notes'){renderNotes();populateOrgDropdowns();}
+}
+
+function switchPanel(prefix,panels,idx){
+  panels.forEach(p=>{const el=document.getElementById(prefix+'-'+p+'-panel');if(el)el.style.display='none';});
+  document.getElementById(prefix+'-'+panels[idx]+'-panel').style.display='';
+  const tabs=document.querySelectorAll(`#section-${prefix==='menu'?'menu':'vendors'} .inner-tab`);
+  tabs.forEach((t,i)=>t.classList.toggle('active',i===idx));
+}
+
+// ══════════════════════════════════════════
+// COLLECT & SAVE
+// ══════════════════════════════════════════
+const menuFields=['cateringStyle','catererName','catererContact','catererCost','dietaryNotes','menuAppetizers','menuMains','menuSides','menuDesserts','barType','bartenderNeeded','bartenderInfo','beerList','wineList','signatureCocktail','naOptions','barCost','bakeryName','bakeryContact','cakeDesc','cakeServings','cakeInscription','cakeCost','cakeDelivery'];
+const vpFields=['djSongs','djNoPlay','djSpecial','photoShots','videoNeeded','decorTheme','tableCount','decorItems','decorDIY','decorSetup','gamesPlanned','photoBooth','photoBoothCost','speechPlan','slideshowPlan','slideshowWho','memoryJar','runOfShow'];
+const eviteFields=['evitePlatform','eviteLink','eviteSendDate','eviteRsvpDeadline','eviteNotes'];
+
+function collectFields(key){
+  if(key==='menu'){const d={};menuFields.forEach(f=>d[f]=v(f));_s.menu=d;}
+  if(key==='vendors'){const d={};vpFields.forEach(f=>d[f]=v(f));_s.vendors_prefs=d;}
+  if(key==='evite'){const d={};eviteFields.forEach(f=>d[f.replace('evite','').toLowerCase().replace(/^./,c=>c.toLowerCase())]=v(f));_s.evite=d;}
+  /* budget/orgs/venues/vendors/guests/tasks/notes mutate _s directly before calling save() */
+}
+
+function restoreFields(obj,fields){if(!obj)return;fields.forEach(f=>{const key=f.replace('evite','').toLowerCase().replace(/^./,c=>c.toLowerCase());if(obj[key]!==undefined)sv(f,obj[key]);else if(obj[f]!==undefined)sv(f,obj[f]);});}
+
+// ══════════════════════════════════════════
+// ORGANIZERS
+// ══════════════════════════════════════════
+const orgColors={cindy:{bg:'#E6F1FB',color:'#185FA5',border:'#B5D4F4'},sue:{bg:'#FBEAF0',color:'#993556',border:'#F4C0D1'},corey:{bg:'#EAF3DE',color:'#3B6D11',border:'#C0DD97'},all:{bg:'#F5E6C0',color:'#8B6914',border:'#E8D9B5'}};
+
+function renderOrgs(){
+  const el=document.getElementById('orgList');
+  if(!_s.orgs.length){el.innerHTML='<div class="empty"><div class="empty-icon">👤</div><div class="empty-text">No organizers added yet.</div></div>';return;}
+  el.innerHTML=_s.orgs.map(o=>{
+    const c=orgColors[o.color]||orgColors.all;
+    return `<div class="organizer-card" style="background:${c.bg};border-color:${c.border}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-weight:700;color:${c.color};font-size:14px;">${o.name}</div>
+          <div style="color:${c.color};opacity:0.85;font-family:'Helvetica Neue',sans-serif;font-size:12px;margin-top:3px;">${o.resp||'No responsibilities set'}</div>
+        </div>
+        <div style="display:flex;gap:5px;">
+          <button class="btn btn-sm btn-outline" onclick="editOrg('${o.id}')">✏️ Edit</button>
+          <button class="btn btn-danger" onclick="removeOrg('${o.id}')">✕</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  populateOrgDropdowns();
+}
+
+function openModal(id){
+  if(id==='orgModal'){document.getElementById('org_editId').value='';document.getElementById('org_name').value='';document.getElementById('org_resp').value='';document.getElementById('org_color').value='cindy';document.getElementById('orgModalTitle').textContent='Add Organizer';}
+  if(id==='taskModal'){document.getElementById('task_editId').value='';document.getElementById('taskInput').value='';document.getElementById('taskDue').value='';document.getElementById('taskNotes').value='';document.getElementById('taskModalTitle').textContent='Add Task';populateOrgDropdowns();}
+  document.getElementById(id).classList.add('open');
+  setTimeout(()=>{const inp=document.querySelector(`#${id} input[type=text]`);if(inp)inp.focus();},100);
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+
+function saveOrg(){
+  const name=document.getElementById('org_name').value.trim();if(!name)return;
+  const editId=document.getElementById('org_editId').value;
+  const obj={id:editId||uid(),name,resp:document.getElementById('org_resp').value,color:document.getElementById('org_color').value};
+  if(editId){const idx=_s.orgs.findIndex(o=>o.id===editId);if(idx>-1)_s.orgs[idx]=obj;}
+  else _s.orgs.push(obj);
+  save('orgs',_s.orgs);closeModal('orgModal');renderOrgs();
+}
+function editOrg(id){
+  const o=_s.orgs.find(o=>o.id===id);if(!o)return;
+  document.getElementById('org_editId').value=o.id;
+  document.getElementById('org_name').value=o.name;
+  document.getElementById('org_resp').value=o.resp;
+  document.getElementById('org_color').value=o.color;
+  document.getElementById('orgModalTitle').textContent='Edit Organizer';
+  document.getElementById('orgModal').classList.add('open');
+}
+function removeOrg(id){
+  if(!confirm('Remove this organizer?'))return;
+  _s.orgs=_s.orgs.filter(o=>o.id!==id);
+  save('orgs',_s.orgs);renderOrgs();
+}
+
+function populateOrgDropdowns(){
+  const names=_s.orgs.map(o=>o.name).concat(['All']);
+  ['taskAssigned','noteAuthor'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const cur=el.value;
+    el.innerHTML=names.map(n=>`<option value="${n}">${n}</option>`).join('');
+    if(names.includes(cur))el.value=cur;
+  });
+  // also update task filter
+  const tf=document.getElementById('taskFilterAssigned');
+  if(tf){const cur=tf.value;tf.innerHTML='<option value="">All People</option>'+names.map(n=>`<option value="${n}">${n}</option>`).join('');if(cur)tf.value=cur;}
+}
+
+
+function renderRespBanner(section){
+  // Show organizer responsible for each section in a contextual banner
+  const bannerMap={venue:'venueRespBanner',guest:'guestRespBanner',menu:'menuRespBanner',vendor:'djRespBanner',decor:'decorRespBanner',fun:'funRespBanner'};
+  const elId=bannerMap[section]; if(!elId)return;
+  const el=document.getElementById(elId); if(!el)return;
+  if(!_s.orgs.length){el.innerHTML='';return;}
+  // Show all organizers compactly
+  const c=orgColors[_s.orgs[0]?.color]||orgColors.all;
+  el.innerHTML=`<div class="resp-banner" style="background:${c.bg};color:${c.color};border:1px solid ${c.border}">
+    ${_s.orgs.map(o=>`<span class="owner-tag owner-${o.color}">${o.name}</span>`).join(' ')}&nbsp;· Check <strong>Roles</strong> tab to update responsibilities.
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+// VENUES
+// ══════════════════════════════════════════
+function openModal_venue(editId){
+  document.getElementById('venueEditId').value=editId||'';
+  if(editId){
+    const ven=_s.venues.find(v=>v.id===editId);if(!ven)return;
+    document.getElementById('venueModalTitle').textContent='Edit Venue';
+    ['name','address','contact','contactInfo','capacity','cost','type','catering','status','parking','deposit','notes'].forEach(f=>sv('v_'+f,ven[f]));
+  } else {
+    document.getElementById('venueModalTitle').textContent='Add Venue';
+    ['v_name','v_address','v_contact','v_contactInfo','v_capacity','v_cost','v_parking','v_notes'].forEach(id=>sv(id,''));
+    sv('v_type','');sv('v_catering','');sv('v_status','researching');sv('v_deposit','');
+  }
+  document.getElementById('venueModal').classList.add('open');
+}
+function saveVenueEntry(){
+  const name=v('v_name').trim();if(!name){alert('Venue name required.');return;}
+  const editId=v('venueEditId');
+  const obj={id:editId||uid(),name,address:v('v_address'),contact:v('v_contact'),contactInfo:v('v_contactInfo'),capacity:v('v_capacity'),cost:v('v_cost'),type:v('v_type'),catering:v('v_catering'),status:v('v_status'),parking:v('v_parking'),deposit:v('v_deposit'),notes:v('v_notes')};
+  if(obj.status==='approved'){_s.venues.forEach(ven=>{if(ven.id!==obj.id)ven.status=ven.status==='approved'?'contacted':ven.status;});}
+  if(editId){const idx=_s.venues.findIndex(ven=>ven.id===editId);if(idx>-1)_s.venues[idx]=obj;}
+  else _s.venues.push(obj);
+  save('venues',_s.venues);closeModal('venueModal');renderVenues();
+}
+function updateHeaderLocation(){
+  const approved=_s.venues.find(v=>v.status==='approved');
+  const el=document.getElementById('headerLocation');
+  if(!el)return;
+  if(approved){
+    const loc=approved.address?approved.name+' · '+approved.address:approved.name;
+    el.textContent='📍 '+loc;
+    el.style.color='#F5E6C0';
+  } else {
+    el.textContent='📍 Venue: TBD';
+    el.style.color='rgba(245,230,192,0.55)';
+  }
+}
+function approveVenue(id){
+  _s.venues.forEach(ven=>ven.status=ven.id===id?'approved':(ven.status==='approved'?'contacted':ven.status));
+  save('venues',_s.venues);renderVenues();updateHeaderLocation();
+}
+function removeVenue(id){
+  if(!confirm('Remove this venue?'))return;
+  _s.venues=_s.venues.filter(ven=>ven.id!==id);
+  save('venues',_s.venues);renderVenues();
+}
+const vstatus={researching:'badge-pending',contacted:'badge-booked',touring:'badge-gold',approved:'badge-approved',declined:'badge-cancelled'};
+const vstatusLabel={researching:'Researching',contacted:'Contacted',touring:'Site Visit',approved:'✓ Approved',declined:'Not Selected'};
+function renderVenues(){
+  const el=document.getElementById('venueList');
+  if(!_s.venues.length){el.innerHTML='<div class="empty"><div class="empty-icon">📍</div><div class="empty-text">No venues added yet.<br>Tap + Add Venue to start.</div></div>';return;}
+  const sorted=[..._s.venues].sort((a,b)=>(a.status==='approved'?-1:b.status==='approved'?1:0));
+  el.innerHTML=sorted.map(ven=>{
+    const approved=ven.status==='approved';
+    return `<div class="vcard ${approved?'approved':''}">
+      <div class="vcard-header">
+        <div class="vcard-name">${approved?'🏆 ':''}${ven.name}</div>
+        <span class="badge ${vstatus[ven.status]||'badge-pending'}">${vstatusLabel[ven.status]||ven.status}</span>
+      </div>
+      <div class="vcard-body">
+        ${ven.address?'📍 '+ven.address+'<br>':''}
+        ${ven.contact?'👤 '+ven.contact+(ven.contactInfo?' · '+ven.contactInfo:'')+'<br>':''}
+        ${ven.capacity?'👥 Capacity: '+ven.capacity+'<br>':''}
+        ${ven.cost?'💰 '+ven.cost+(ven.deposit?' · Deposit: '+ven.deposit:'')+'<br>':''}
+        ${ven.type?'🏠 '+ven.type+(ven.catering?' · Catering: '+ven.catering:'')+'<br>':''}
+        ${ven.parking?'🅿️ '+ven.parking+'<br>':''}
+        ${ven.notes?'<div style="margin-top:4px;padding-top:4px;border-top:1px dashed var(--border)">'+ven.notes+'</div>':''}
+      </div>
+      <div class="vcard-actions">
+        ${!approved?`<button class="btn btn-green btn-sm" onclick="approveVenue('${ven.id}')">✓ Approve</button>`:`<button class="btn btn-outline btn-sm" onclick="approveVenue('x_none')">Unapprove</button>`}
+        <button class="btn btn-outline btn-sm" onclick="openModal_venue('${ven.id}')">✏️ Edit</button>
+        <button class="btn btn-danger" onclick="removeVenue('${ven.id}')">Remove</button>
+      </div>
+    </div>`;
+  }).join('');
+  updateHeaderLocation();
+}
+
+// ══════════════════════════════════════════
+// VENDORS (multi-entry per category)
+// ══════════════════════════════════════════
+function openVendorModal(cat,editId){
+  document.getElementById('vendor_category').value=cat;
+  document.getElementById('vendor_editId').value=editId||'';
+  const catLabels={dj:'DJ / Music',photo:'Photographer',decor:'Florist / Decorator'};
+  if(editId){
+    const list=_s.vendors[cat]||[];
+    const vnd=list.find(v=>v.id===editId);if(!vnd)return;
+    document.getElementById('vendorModalTitle').textContent='Edit '+catLabels[cat];
+    ['name','contact','cost','hours','status','notes'].forEach(f=>sv('vnd_'+f,vnd[f]));
+  } else {
+    document.getElementById('vendorModalTitle').textContent='Add '+catLabels[cat];
+    ['vnd_name','vnd_contact','vnd_cost','vnd_hours','vnd_notes'].forEach(id=>sv(id,''));
+    sv('vnd_status','researching');
+  }
+  document.getElementById('vendorModal').classList.add('open');
+}
+function saveVendorEntry(){
+  const name=v('vnd_name').trim();if(!name){alert('Name required.');return;}
+  const cat=v('vendor_category');
+  const editId=v('vendor_editId');
+  const obj={id:editId||uid(),name,contact:v('vnd_contact'),cost:v('vnd_cost'),hours:v('vnd_hours'),status:v('vnd_status'),notes:v('vnd_notes')};
+  if(!_s.vendors[cat])_s.vendors[cat]=[];
+  if(obj.status==='approved'){_s.vendors[cat].forEach(vnd=>{if(vnd.id!==obj.id)vnd.status=vnd.status==='approved'?'contacted':vnd.status;});}
+  if(editId){const idx=_s.vendors[cat].findIndex(vnd=>vnd.id===editId);if(idx>-1)_s.vendors[cat][idx]=obj;}
+  else _s.vendors[cat].push(obj);
+  save('vendors',_s.vendors);closeModal('vendorModal');renderAllVendors();
+}
+function approveVendor(cat,id){
+  if(!_s.vendors[cat])return;
+  _s.vendors[cat].forEach(vnd=>vnd.status=vnd.id===id?'approved':(vnd.status==='approved'?'contacted':vnd.status));
+  save('vendors',_s.vendors);renderAllVendors();
+}
+function removeVendor(cat,id){
+  if(!confirm('Remove this vendor?'))return;
+  _s.vendors[cat]=(_s.vendors[cat]||[]).filter(v=>v.id!==id);
+  save('vendors',_s.vendors);renderAllVendors();
+}
+function renderVendorList(cat){
+  const el=document.getElementById('vendorList-'+cat);if(!el)return;
+  const list=_s.vendors[cat]||[];
+  const emptyMsg={dj:'No DJ options added yet.',photo:'No photographers added yet.',decor:'No decorators added yet.'};
+  if(!list.length){el.innerHTML=`<div class="empty"><div class="empty-text">${emptyMsg[cat]||'None added yet.'}</div></div>`;return;}
+  const sorted=[...list].sort((a,b)=>(a.status==='approved'?-1:b.status==='approved'?1:0));
+  el.innerHTML=sorted.map(vnd=>{
+    const approved=vnd.status==='approved';
+    return `<div class="vcard ${approved?'approved':''}">
+      <div class="vcard-header">
+        <div class="vcard-name">${approved?'✓ ':''}${vnd.name}</div>
+        <span class="badge ${vstatus[vnd.status]||'badge-pending'}">${vstatusLabel[vnd.status]||vnd.status}</span>
+      </div>
+      <div class="vcard-body">
+        ${vnd.contact?'📞 '+vnd.contact+'<br>':''}
+        ${vnd.cost?'💰 '+vnd.cost+'<br>':''}
+        ${vnd.hours?'🕐 '+vnd.hours+'<br>':''}
+        ${vnd.notes?'<div style="margin-top:4px;padding-top:4px;border-top:1px dashed var(--border)">'+vnd.notes+'</div>':''}
+      </div>
+      <div class="vcard-actions">
+        ${!approved?`<button class="btn btn-green btn-sm" onclick="approveVendor('${cat}','${vnd.id}')">✓ Approve</button>`:`<button class="btn btn-outline btn-sm" onclick="approveVendor('${cat}','x_none')">Unapprove</button>`}
+        <button class="btn btn-outline btn-sm" onclick="openVendorModal('${cat}','${vnd.id}')">✏️ Edit</button>
+        <button class="btn btn-danger" onclick="removeVendor('${cat}','${vnd.id}')">Remove</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function renderAllVendors(){['dj','photo','decor'].forEach(renderVendorList);}
+
+// ══════════════════════════════════════════
+// GUESTS
+// ══════════════════════════════════════════
+function addGuest(){
+  const name=v('guestNameInput').trim();if(!name)return;
+  const total=_s.guests.reduce((a,g)=>a+g.size,0);
+  const size=parseInt(v('guestSizeInput'))||1;
+  if(total+size>50){alert(`Would exceed 50 guests (currently ${total}).`);return;}
+  _s.guests.push({id:uid(),name,size,rsvp:v('guestRsvpInput'),rel:v('guestRelInput'),diet:v('guestDietInput'),note:v('guestNoteInput')});
+  save('guests',_s.guests);closeModal('guestModal');
+  ['guestNameInput','guestRelInput','guestDietInput','guestNoteInput'].forEach(id=>sv(id,''));sv('guestSizeInput','1');sv('guestRsvpInput','invited');
+  renderGuests();
+}
+function removeGuest(id){if(!confirm('Remove?'))return;_s.guests=_s.guests.filter(g=>g.id!==id);save('guests',_s.guests);renderGuests();}
+function renderGuests(){
+  const el=document.getElementById('guestList'),sumEl=document.getElementById('guestSummary');
+  if(!_s.guests.length){el.innerHTML='<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">No guests yet.</div></div>';sumEl.textContent='';return;}
+  const total=_s.guests.reduce((a,g)=>a+g.size,0);
+  const yes=_s.guests.filter(g=>g.rsvp==='yes').reduce((a,g)=>a+g.size,0);
+  const no=_s.guests.filter(g=>g.rsvp==='no').reduce((a,g)=>a+g.size,0);
+  sumEl.innerHTML=`<strong>${total}/50</strong> · <span style="color:var(--success)">${yes} confirmed</span> · <span style="color:var(--danger)">${no} declined</span> · ${total-yes-no} pending`;
+  const rb={yes:'badge-confirmed',no:'badge-cancelled',invited:'badge-pending',maybe:'badge-pending'};
+  const rl={yes:'Attending',no:'Declined',invited:'Awaiting',maybe:'Maybe'};
+  el.innerHTML=_s.guests.map(g=>`
+    <div class="guest-item">
+      <div class="guest-avatar">${g.name.trim().split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase()}</div>
+      <div style="flex:1"><div style="font-size:14px;">${g.name}</div>
+        <div style="font-family:'Helvetica Neue',sans-serif;font-size:11px;color:var(--text-muted);">${g.size>1?'Party of '+g.size:'Individual'}${g.rel?' · '+g.rel:''}${g.diet?' · 🥗 '+g.diet:''}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+        <span class="badge ${rb[g.rsvp]||'badge-pending'}">${rl[g.rsvp]||g.rsvp}</span>
+        <button class="btn btn-danger" onclick="removeGuest('${g.id}')">✕</button>
+      </div>
+    </div>`).join('');
+  document.getElementById('stat-guests').textContent=total;
+}
+
+// ══════════════════════════════════════════
+// TASKS (add, edit, toggle, filter)
+// ══════════════════════════════════════════
+function openTaskModal(editId){
+  populateOrgDropdowns();
+  if(editId){
+    const task=_s.tasks.find(t=>t.id===editId);if(!task)return;
+    document.getElementById('task_editId').value=editId;
+    document.getElementById('taskModalTitle').textContent='Edit Task';
+    sv('taskInput',task.text);sv('taskAssigned',task.assigned);sv('taskDue',task.due);sv('taskCategory',task.category);sv('taskNotes',task.notes||'');
+  } else {
+    document.getElementById('task_editId').value='';
+    document.getElementById('taskModalTitle').textContent='Add Task';
+    sv('taskInput','');sv('taskDue','');sv('taskNotes','');
+  }
+  document.getElementById('taskModal').classList.add('open');
+}
+function saveTask(){
+  const text=v('taskInput').trim();if(!text)return;
+  const editId=v('task_editId');
+  const obj={id:editId||uid(),text,assigned:v('taskAssigned'),due:v('taskDue'),category:v('taskCategory'),notes:v('taskNotes'),done:false};
+  if(editId){const idx=_s.tasks.findIndex(t=>t.id===editId);if(idx>-1){obj.done=_s.tasks[idx].done;_s.tasks[idx]=obj;}else _s.tasks.push(obj);}
+  else _s.tasks.push(obj);
+  save('tasks',_s.tasks);closeModal('taskModal');renderTasks();
+}
+function toggleTask(id){const t=_s.tasks.find(t=>t.id===id);if(t)t.done=!t.done;save('tasks',_s.tasks);renderTasks();}
+function removeTask(id){if(!confirm('Remove task?'))return;_s.tasks=_s.tasks.filter(t=>t.id!==id);save('tasks',_s.tasks);renderTasks();}
+
+function ownerClass(name){
+  const org=_s.orgs.find(o=>o.name===name);
+  if(org)return 'owner-'+org.color;
+  if(name==='All')return 'owner-all';
+  return 'owner-all';
+}
+
+function renderTasks(){
+  const done=_s.tasks.filter(t=>t.done).length;
+  const pct=_s.tasks.length?Math.round(done/_s.tasks.length*100):0;
+  document.getElementById('taskProgressLabel').textContent=`${done} of ${_s.tasks.length} complete`;
+  document.getElementById('taskPct').textContent=pct+'%';
+  document.getElementById('taskBar').style.width=pct+'%';
+  document.getElementById('stat-tasks').textContent=pct+'%';
+
+  const filterPerson=v('taskFilterAssigned');
+  const filterDone=v('taskFilterDone');
+  const filterCat=v('taskFilterCategory');
+  let tasks=[..._s.tasks];
+  if(filterPerson)tasks=tasks.filter(t=>t.assigned===filterPerson);
+  if(filterCat)tasks=tasks.filter(t=>t.category===filterCat);
+  if(filterDone==='open')tasks=tasks.filter(t=>!t.done);
+  if(filterDone==='done')tasks=tasks.filter(t=>t.done);
+  tasks.sort((a,b)=>a.done-b.done);
+
+  const el=document.getElementById('taskList');
+  if(!tasks.length){el.innerHTML='<div class="empty"><div class="empty-text">No tasks match this filter.</div></div>';return;}
+
+  // Sort: overdue first (among open), then by due date, then no-due, then done
+  tasks.sort((a,b)=>{
+    if(a.done!==b.done)return a.done-b.done;
+    if(!a.due&&!b.due)return 0;
+    if(!a.due)return 1;
+    if(!b.due)return -1;
+    return new Date(a.due)-new Date(b.due);
+  });
+
+  el.innerHTML=tasks.map(t=>{
+    const dueInfo=dueDateInfo(t.due,t.done);
+    return `<div class="task-item" style="${dueInfo.overdue?'background:#FFF8F8;border-radius:var(--radius-sm);padding:9px 8px;margin-bottom:2px;':''}">
+      <div class="task-check ${t.done?'done':''}" onclick="toggleTask('${t.id}')">${t.done?'✓':''}</div>
+      <div style="flex:1">
+        <div class="task-name ${t.done?'done':''}">${t.text}</div>
+        <div class="task-meta" style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:3px;">
+          <span class="owner-tag ${ownerClass(t.assigned)}">${t.assigned}</span>
+          ${t.category?`<span style="color:var(--text-muted)">· ${t.category}</span>`:''}
+          ${dueInfo.html}
+        </div>
+        ${t.notes?`<div style="margin-top:3px;font-family:'Helvetica Neue',sans-serif;font-size:11px;font-style:italic;color:var(--text-muted);">${t.notes}</div>`:''}
+      </div>
+      <button class="btn btn-outline btn-sm" style="flex-shrink:0;margin-right:4px;" onclick="openTaskModal('${t.id}')">✏️</button>
+      <button class="btn btn-danger" style="flex-shrink:0;" onclick="removeTask('${t.id}')">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function dueDateInfo(due,done){
+  if(!due)return{html:'',overdue:false};
+  const today=new Date();today.setHours(0,0,0,0);
+  const d=new Date(due+'T00:00:00');
+  const diff=Math.ceil((d-today)/86400000);
+  if(done)return{html:`<span style="font-size:10px;color:var(--text-muted);background:#F0F0F0;padding:1px 7px;border-radius:10px;">📅 ${fmtDate(due)}</span>`,overdue:false};
+  if(diff<0)return{html:`<span style="font-size:10px;font-weight:700;color:#A32D2D;background:#FCEBEB;padding:1px 7px;border-radius:10px;">⚠ Overdue · ${fmtDate(due)}</span>`,overdue:true};
+  if(diff===0)return{html:`<span style="font-size:10px;font-weight:700;color:#7A4000;background:#FFF0DC;padding:1px 7px;border-radius:10px;">🔥 Due Today</span>`,overdue:false};
+  if(diff<=7)return{html:`<span style="font-size:10px;font-weight:700;color:#7A4000;background:#FFF0DC;padding:1px 7px;border-radius:10px;">⏰ Due in ${diff}d · ${fmtDate(due)}</span>`,overdue:false};
+  if(diff<=30)return{html:`<span style="font-size:10px;color:#185FA5;background:#E6F1FB;padding:1px 7px;border-radius:10px;">📅 ${fmtDate(due)}</span>`,overdue:false};
+  return{html:`<span style="font-size:10px;color:var(--text-muted);background:#F5F5F5;padding:1px 7px;border-radius:10px;">📅 ${fmtDate(due)}</span>`,overdue:false};
+}
+function fmtDate(str){
+  if(!str)return'';
+  const d=new Date(str+'T00:00:00');
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+
+// ══════════════════════════════════════════
+// NOTES
+// ══════════════════════════════════════════
+function addNote(){
+  const text=v('noteContent').trim();if(!text)return;
+  _s.notes.unshift({id:uid(),author:v('noteAuthor'),text,date:new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'})});
+  save('notes',_s.notes);closeModal('noteModal');sv('noteContent','');renderNotes();
+}
+function removeNote(id){if(!confirm('Remove?'))return;_s.notes=_s.notes.filter(n=>n.id!==id);save('notes',_s.notes);renderNotes();}
+function renderNotes(){
+  const el=document.getElementById('notesList');
+  if(!_s.notes.length){el.innerHTML='<div class="empty"><div class="empty-icon">📝</div><div class="empty-text">No notes yet.</div></div>';return;}
+  el.innerHTML=_s.notes.map(n=>`
+    <div class="note-item">
+      <div style="display:flex;justify-content:space-between;">
+        <div style="flex:1;font-size:14px;line-height:1.5;">${n.text}</div>
+        <button class="btn btn-danger" style="margin-left:8px;flex-shrink:0;" onclick="removeNote('${n.id}')">✕</button>
+      </div>
+      <div class="note-meta"><span class="owner-tag ${ownerClass(n.author)}">${n.author}</span> · ${n.date}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// BUDGET
+// ══════════════════════════════════════════
+function addBudgetLine(){const name=prompt('Category name:');if(!name)return;_s.budget.categories.push({name,estimated:'',actual:''});save('budget',_s.budget);renderBudgetUI();}
+function updateBudgetLine(i,field,val){_s.budget.categories[i][field]=val;save('budget',_s.budget);renderBudgetUI();}
+function removeBudgetLine(i){_s.budget.categories.splice(i,1);save('budget',_s.budget);renderBudgetUI();}
+function renderBudgetUI(){
+  sv('totalBudget',_s.budget.total);
+  const cats=_s.budget.categories||[];
+  const totalSpent=cats.reduce((a,c)=>a+(parseFloat(c.actual)||0),0);
+  const totalEst=cats.reduce((a,c)=>a+(parseFloat(c.estimated)||0),0);
+  const budget=parseFloat(_s.budget.total)||0;
+  const pct=budget?Math.min(100,Math.round(totalSpent/budget*100)):0;
+  document.getElementById('stat-budget').textContent='$'+(totalEst>=1000?(totalEst/1000).toFixed(1)+'k':totalEst.toFixed(0));
+  document.getElementById('budgetDisplay').innerHTML=`
+    ${cats.map(c=>`<div class="budget-row"><div style="font-size:13px;">${c.name}</div><div style="text-align:right">
+      <div style="font-size:15px;font-weight:bold;">${c.actual?'$'+parseFloat(c.actual).toLocaleString():c.estimated?'<span style="color:var(--text-muted);font-size:13px">~$'+parseFloat(c.estimated).toLocaleString()+'</span>':'<span style="color:var(--text-muted);font-size:13px">—</span>'}</div>
+      ${c.actual&&c.estimated?'<div style="font-size:10px;color:var(--text-muted)">Est. $'+parseFloat(c.estimated).toLocaleString()+'</div>':''}
+    </div></div>`).join('')}
+    <hr class="divider">
+    <div style="display:flex;justify-content:space-between;font-weight:bold;font-size:16px;padding:4px 0;"><span>Total Estimated</span><span style="color:var(--gold-dark)">$${totalEst.toLocaleString()}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;padding:3px 0;color:var(--text-muted);"><span>Actual Paid</span><span>$${totalSpent.toLocaleString()}</span></div>
+    ${budget?`<div style="margin-top:8px"><div style="display:flex;justify-content:space-between;font-family:'Helvetica Neue',sans-serif;font-size:11px;color:var(--text-muted);margin-bottom:3px;"><span>Budget used</span><span>${pct}% of $${budget.toLocaleString()}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${pct>90?'#E24B4A':'linear-gradient(90deg,var(--gold),#E8C46A)'}"></div></div></div>`:''}`;
+  document.getElementById('budgetEdit').innerHTML=cats.map((c,i)=>`
+    <div style="border-bottom:1px solid var(--border);padding:9px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="font-size:13px;font-weight:bold;">${c.name}</span>
+        <button class="btn btn-danger" onclick="removeBudgetLine(${i})">Remove</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div><label style="margin-top:0">Estimated</label><input type="number" placeholder="0" value="${c.estimated}" oninput="updateBudgetLine(${i},'estimated',this.value)" style="background:white"></div>
+        <div><label style="margin-top:0">Actual Paid</label><input type="number" placeholder="0" value="${c.actual}" oninput="updateBudgetLine(${i},'actual',this.value)" style="background:white"></div>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════
+function sh(id,text){const el=document.getElementById(id);if(el)el.textContent=text;}
+
+function updateDashboard(){
+  const days=Math.ceil((new Date('2026-11-07T14:00:00')-new Date())/86400000);
+  document.getElementById('stat-days').textContent=days>0?days:0;
+  renderGuests();
+  renderTasks();
+  const cats=_s.budget?.categories||[];
+  const est=cats.reduce((a,c)=>a+(parseFloat(c.estimated)||0),0);
+  document.getElementById('stat-budget').textContent='$'+(est>=1000?(est/1000).toFixed(1)+'k':est.toFixed(0));
+
+  // Nav button hints
+  const approvedVenue=_s.venues.find(v=>v.status==='approved');
+  const approvedDJ=(_s.vendors.dj||[]).find(v=>v.status==='approved');
+  const approvedPhoto=(_s.vendors.photo||[]).find(v=>v.status==='approved');
+  const guestTotal=_s.guests.reduce((a,g)=>a+g.size,0);
+  const guestConfirmed=_s.guests.filter(g=>g.rsvp==='yes').reduce((a,g)=>a+g.size,0);
+  const taskDone=_s.tasks.filter(t=>t.done).length;
+  const taskTotal=_s.tasks.length;
+  const taskPct=taskTotal?Math.round(taskDone/taskTotal*100):0;
+  const noteCount=_s.notes.length;
+
+  sh('hint-resp',`${_s.orgs.length} organizer${_s.orgs.length!==1?'s':''} · tap to edit`);
+  sh('hint-venue',approvedVenue?'✓ '+approvedVenue.name:(_s.venues.length?_s.venues.length+' option'+(_s.venues.length!==1?'s':'')+' being researched':'No venues added yet'));
+  sh('hint-guests',guestTotal>0?`${guestTotal}/50 added · ${guestConfirmed} confirmed`:'No guests added yet');
+  sh('hint-menu',_s.menu?.catererName?'Caterer: '+_s.menu.catererName:'Food · Bar · Cake');
+  sh('hint-vendors',[approvedDJ?'DJ ✓':'No DJ yet',approvedPhoto?'Photo ✓':''].filter(x=>x).join(' · ')||'DJ · Photo · Decor · Fun');
+  sh('hint-budget',est>0?'$'+est.toLocaleString()+' estimated':'No budget set yet');
+  sh('hint-tasks',taskTotal>0?`${taskDone}/${taskTotal} complete (${taskPct}%)`:'No tasks yet');
+  sh('hint-notes',noteCount>0?noteCount+' note'+(noteCount!==1?'s':'')+' from the team':'No notes yet');
+
+  updateHeaderLocation();
+
+  // Planning Status — each item has a deadline (weeks before Nov 7) and done state
+  // "On Track" = done OR deadline hasn't passed yet
+  // "Off Track" = not done AND deadline has already passed
+  const party=new Date('2026-11-07');
+  const today=new Date();today.setHours(0,0,0,0);
+  const daysToParty=Math.ceil((party-today)/86400000);
+
+  function statusItem(label,done,deadlineWeeksBefore,detail){
+    const deadlineDate=new Date(party);
+    deadlineDate.setDate(deadlineDate.getDate()-(deadlineWeeksBefore*7));
+    const isPast=today>deadlineDate;
+    const daysUntilDeadline=Math.ceil((deadlineDate-today)/86400000);
+    let badge,color,bg;
+    if(done){
+      badge='✓ Done'; color='var(--success)'; bg='var(--success-bg)';
+    } else if(isPast){
+      badge='⚠ Off Track'; color='var(--danger)'; bg='var(--danger-bg)';
+    } else if(daysUntilDeadline<=21){
+      badge='⏰ Due Soon'; color='#7A4000'; bg='#FFF0DC';
+    } else {
+      badge='On Track'; color='var(--info)'; bg='var(--info-bg)';
+    }
+    const dlStr=deadlineDate.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    return `<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);">
+      <div style="width:20px;height:20px;border-radius:50%;background:${done?'var(--gold)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:11px;color:white;flex-shrink:0;margin-top:1px;">${done?'✓':''}</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;${done?'color:var(--text-muted);text-decoration:line-through;':''}">${label}${detail?` <span style="font-size:11px;color:var(--text-muted)">· ${detail}</span>`:''}</div>
+        <div style="margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span style="font-family:'Helvetica Neue',sans-serif;font-size:10px;font-weight:700;padding:1px 8px;border-radius:10px;background:${bg};color:${color};">${badge}</span>
+          <span style="font-family:'Helvetica Neue',sans-serif;font-size:10px;color:var(--text-muted);">Target: ${dlStr}</span>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  const approvedVen=_s.venues.find(v=>v.status==='approved');
+  const approvedDj=(_s.vendors.dj||[]).find(v=>v.status==='approved');
+  document.getElementById('dashboardStatus').innerHTML=[
+    statusItem('Venue approved',          !!approvedVen,                                              18, approvedVen?.name),
+    statusItem('DJ / music approved',     !!approvedDj,                                               16, approvedDj?.name),
+    statusItem('Caterer arranged',        !!_s.menu?.catererName,                                     14),
+    statusItem('Bar plan confirmed',      !!_s.menu?.barType,                                         12),
+    statusItem('Cake ordered',            !!_s.menu?.bakeryName,                                      10),
+    statusItem('Guest list finalized',    _s.guests?.length>=10,                                      14),
+    statusItem('E-vites sent',            !!_s.evite?.link,                                           10),
+    statusItem('Decor theme &amp; plan',  !!_s.vendors_prefs?.decorTheme,                             12),
+    statusItem('Photographer approved',   !!approvedPhoto,                                            14),
+    statusItem('Slideshow assigned',      !!_s.vendors_prefs?.slideshowWho,                           8),
+    statusItem('Run-of-show drafted',     !!_s.vendors_prefs?.runOfShow,                              4),
+    statusItem('Final RSVPs confirmed',   _s.guests?.filter(g=>g.rsvp==='yes').length>10,             3),
+  ].join('');
+}
+
+// ══════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════
+function v(id){const el=document.getElementById(id);return el?el.value:'';}
+function sv(id,val){const el=document.getElementById(id);if(el&&val!=null)el.value=val;}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+async function init(){
+  try{
+    const data = await jbLoad();
+
+    // Merge loaded data into state — keep defaults for anything missing
+    if(data.orgs&&data.orgs.length)_s.orgs=data.orgs;
+    if(data.venues)_s.venues=data.venues;
+    if(data.vendors)_s.vendors={dj:[],photo:[],decor:[],...data.vendors};
+    if(data.menu&&Object.keys(data.menu).length){
+      _s.menu=data.menu;
+      menuFields.forEach(f=>sv(f,data.menu[f]));
+    }
+    if(data.vendors_prefs&&Object.keys(data.vendors_prefs).length){
+      _s.vendors_prefs=data.vendors_prefs;
+      vpFields.forEach(f=>sv(f,data.vendors_prefs[f]));
+    }
+    if(data.evite&&Object.keys(data.evite).length){
+      _s.evite=data.evite;
+      eviteFields.forEach(f=>{
+        const k=f.replace('evite','').replace(/^./,c=>c.toLowerCase());
+        sv(f,data.evite[k]||data.evite[f]);
+      });
+    }
+    if(data.budget&&data.budget.categories)_s.budget=data.budget;
+    if(data.guests)_s.guests=data.guests;
+    if(data.tasks&&data.tasks.length)_s.tasks=data.tasks;
+    else if(!_s.tasks.length)_s.tasks=defaultTasks();
+    if(data.notes)_s.notes=data.notes;
+
+    document.getElementById('syncDot').classList.add('live');
+    setSyncStatus('Connected · changes save for everyone');
+    document.getElementById('loadingOverlay').style.display='none';
+
+    populateOrgDropdowns();
+    updateDashboard();
+    renderTasks();
+    renderGuests();
+    renderNotes();
+    renderBudgetUI();
+    renderVenues();
+    renderAllVendors();
+    updateHeaderLocation();
+  }catch(err){
+    console.error('Init error:',err);
+    setSyncStatus('⚠ Could not connect to JSONBin – check your network');
+    if(!_s.tasks.length)_s.tasks=defaultTasks();
+    document.getElementById('loadingOverlay').style.display='none';
+    populateOrgDropdowns();updateDashboard();renderTasks();renderBudgetUI();
+  }
+}
+init();
+</script>
+</body>
+</html>
