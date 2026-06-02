@@ -39,7 +39,7 @@ body{font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(
   padding:1.4rem 1rem 1rem;
   text-align:center;
   position:relative;
-  overflow:hidden;
+  overflow:visible;
 }
 .app-header::before{
   content:'';position:absolute;inset:0;
@@ -228,6 +228,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="header-divider"><span>✦</span></div>
 </div>
 
+<div id="lastUpdated" style="background:#0E0C08;text-align:right;padding:3px 12px 3px;font-family:'Helvetica Neue',sans-serif;font-size:10px;color:rgba(212,168,67,0.6);letter-spacing:0.2px;min-height:18px;"></div>
+
 <!-- BACK BAR — shown on all non-home sections -->
 <div class="back-bar" id="backBar">
   <button class="back-btn" onclick="switchSection('dashboard')" style="background:var(--gold);color:#0E0C08;padding:7px 16px;border-radius:var(--radius-sm);font-size:14px;font-weight:700;gap:6px;">
@@ -304,13 +306,18 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
       <div class="card-title" style="margin:0"><span>📋</span> Planning Status</div>
-      <select id="psFilter" onchange="updateDashboard()" style="font-size:11px;padding:4px 10px;width:auto;background:var(--surface2);border-color:var(--border);color:var(--text-muted);">
-        <option value="">All Items</option>
-        <option value="off">⚠ Off Track Only</option>
-        <option value="soon">⏰ Due Soon Only</option>
-        <option value="done">✓ Done Only</option>
-        <option value="open">Open Only</option>
-      </select>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <select id="psFilter" onchange="updateDashboard()" style="font-size:11px;padding:4px 10px;width:auto;background:var(--surface2);border-color:var(--border);color:var(--text-muted);">
+          <option value="">All Statuses</option>
+          <option value="off">⚠ Off Track Only</option>
+          <option value="soon">⏰ Due Soon Only</option>
+          <option value="done">✓ Done Only</option>
+          <option value="open">Open Only</option>
+        </select>
+        <select id="psOwnerFilter" onchange="updateDashboard()" style="font-size:11px;padding:4px 10px;width:auto;background:var(--surface2);border-color:var(--border);color:var(--text-muted);">
+          <option value="">All People</option>
+        </select>
+      </div>
     </div>
     <div id="dashboardStatus"></div>
   </div>
@@ -447,18 +454,17 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   </div>
 
   <div id="vendor-dj-panel">
-    
     <div class="card">
       <div class="section-header">
         <div class="card-title" style="margin:0"><span>🎵</span> DJ / Music Options</div>
         <button class="btn btn-gold btn-sm" onclick="openVendorModal('dj')">+ Add</button>
       </div>
-      <p class="text-muted" style="margin-bottom:10px;">Add multiple options, then approve the one you book.</p>
+      <p class="text-muted" style="margin-bottom:10px;">Add multiple DJs to compare, then approve one.</p>
       <div id="vendorList-dj"><div class="empty"><div class="empty-icon">🎵</div><div class="empty-text">No DJ options added yet.</div></div></div>
     </div>
     <div class="card">
       <div class="card-title"><span>🎶</span> Music Preferences</div>
-      <label>Must-Play Songs / Artists</label><textarea id="djSongs" placeholder="Songs Chuck &amp; Sue love, era, genres…" style="min-height:65px" oninput="debounce('vendors')"></textarea>
+      <label>Must-Play Songs / Artists</label><textarea id="djSongs" placeholder="Songs Chuck &amp; Susan love, era, genres…" style="min-height:65px" oninput="debounce('vendors')"></textarea>
       <label>Do-Not-Play</label><textarea id="djNoPlay" placeholder="Songs or genres to avoid…" style="min-height:55px" oninput="debounce('vendors')"></textarea>
       <label>Special Moments</label><textarea id="djSpecial" placeholder="Anniversary waltz, grand entrance, toasts…" style="min-height:65px" oninput="debounce('vendors')"></textarea>
     </div>
@@ -470,14 +476,19 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="card-title" style="margin:0"><span>📸</span> Photography Options</div>
         <button class="btn btn-gold btn-sm" onclick="openVendorModal('photo')">+ Add</button>
       </div>
-      <p class="text-muted" style="margin-bottom:10px;">Add photographers to compare, then approve.</p>
+      <p class="text-muted" style="margin-bottom:10px;">Add photographers to compare, then approve one.</p>
       <div id="vendorList-photo"><div class="empty"><div class="empty-icon">📸</div><div class="empty-text">No photographers added yet.</div></div></div>
     </div>
     <div class="card">
       <div class="card-title"><span>📷</span> Shot Preferences</div>
       <label>Must-Have Shots</label><textarea id="photoShots" placeholder="Full family, couple portrait, grandkids, candids, cake cutting…" style="min-height:65px" oninput="debounce('vendors')"></textarea>
-      <label>Video?</label>
-      <select id="videoNeeded" onchange="debounce('vendors')"><option value="">— Select —</option><option>Yes – video coverage</option><option>Photo only</option><option>No photographer needed</option></select>
+      <label>Video Coverage?</label>
+      <select id="videoNeeded" onchange="debounce('vendors')">
+        <option value="">— Select —</option>
+        <option>Yes – video coverage</option>
+        <option>Photo only</option>
+        <option>No photographer needed</option>
+      </select>
     </div>
   </div>
 
@@ -486,52 +497,114 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div style="display:flex;align-items:center;gap:12px;">
         <span style="font-size:32px;">🌸</span>
         <div>
-          <div style="font-weight:700;color:var(--success);font-size:15px;">Susan is handling decorations</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.5;">As a florist herself, Susan will plan and execute the full décor. Use the fields below to coordinate details with the team.</div>
+          <div style="font-weight:700;color:var(--success);font-size:15px;">Sue is handling decorations</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.5;">As a florist herself, Sue will plan and execute the full décor. Use the fields below to coordinate details with the team.</div>
         </div>
       </div>
     </div>
     <div class="card">
       <div class="card-title"><span>🎨</span> Decoration Plan</div>
       <label>Color Scheme / Theme</label><input type="text" id="decorTheme" placeholder="e.g. Gold &amp; ivory, garden elegance…" oninput="debounce('vendors')">
-      <label>Number of Tables</label><input type="number" id="tableCount" placeholder="e.g. 8" oninput="debounce('vendors')">
+      <label>Number of Tables</label><input type="text" id="tableCount" placeholder="e.g. 8" oninput="debounce('vendors')">
       <label>Floral Arrangements</label><textarea id="decorItems" placeholder="Centerpieces, bouquets, accent arrangements, head table…" style="min-height:75px" oninput="debounce('vendors')"></textarea>
       <label>Additional Decor</label><textarea id="decorDIY" placeholder="Candles, linens, signage, balloons, backdrops, memory table…" style="min-height:75px" oninput="debounce('vendors')"></textarea>
       <label>Setup Time Needed</label><input type="text" id="decorSetup" placeholder="e.g. Arrive at 11 AM, setup until 1 PM" oninput="debounce('vendors')">
       <label>Supply / Material Budget</label><input type="text" id="decorBudget" placeholder="e.g. $400 for flowers and supplies" oninput="debounce('vendors')">
       <label>Notes</label><textarea id="decorNotes" placeholder="Helpers needed, rental items, storage, transport…" style="min-height:55px" oninput="debounce('vendors')"></textarea>
     </div>
-<div id="vendor-fun-panel" style="display:none">
-    
+  </div>
+
+  <div id="vendor-fun-panel" style="display:none">
     <div class="card">
       <div class="card-title"><span>🎮</span> Entertainment &amp; Games</div>
-      <label>Activities Planned</label><textarea id="gamesPlanned" placeholder="Photo booth, trivia about Chuck &amp; Sue, anniversary bingo, lawn games…" style="min-height:75px" oninput="debounce('vendors')"></textarea>
-      <label>Photo Booth</label>
-      <select id="photoBooth" onchange="debounce('vendors')"><option value="">— Select —</option><option>Renting a photo booth</option><option>DIY corner with props</option><option>No photo booth</option></select>
-      <label>Photo Booth Cost</label><input type="text" id="photoBoothCost" placeholder="e.g. $275 for 3 hrs with prints" oninput="debounce('vendors')">
-      <label>Toasts &amp; Speeches Order</label><textarea id="speechPlan" placeholder="Who speaks and in what order…" style="min-height:65px" oninput="debounce('vendors')"></textarea>
-      <label>Couple Slideshow / Video</label>
-      <select id="slideshowPlan" onchange="debounce('vendors')"><option value="">— Select —</option><option>Yes – creating a slideshow</option><option>No slideshow</option><option>TBD</option></select>
-      <label>Slideshow Creator</label><input type="text" id="slideshowWho" placeholder="Name of person responsible" oninput="debounce('vendors')">
-      <label>Memory Jar / Guest Book</label>
-      <select id="memoryJar" onchange="debounce('vendors')"><option value="">— Select —</option><option>Memory Jar</option><option>Guest Book</option><option>Both</option><option>Neither</option></select>
-      <label>Run of Show</label><textarea id="runOfShow" placeholder="2:00 Doors open · 2:15 Couple arrives · 2:30 Toasts · 3:00 Cake cutting…" style="min-height:90px" oninput="debounce('vendors')"></textarea>
+      <p class="text-muted" style="margin-bottom:12px;">Add activities you plan to include. Check them off once confirmed.</p>
+
+      <div style="display:flex;gap:8px;margin-bottom:12px;align-items:flex-end;">
+        <div style="flex:1;">
+          <label style="margin-top:0;">Add Activity</label>
+          <select id="activityPicker" style="margin-bottom:0;">
+            <option value="">— Choose an activity —</option>
+            <optgroup label="Entertainment">
+              <option>Photo Booth (rented)</option>
+              <option>Photo Booth (DIY props)</option>
+              <option>Couple Slideshow / Memory Video</option>
+              <option>Live Music</option>
+              <option>Karaoke</option>
+            </optgroup>
+            <optgroup label="Games">
+              <option>Cornhole</option>
+              <option>Giant Jenga</option>
+              <option>Bocce Ball</option>
+              <option>Anniversary Trivia</option>
+              <option>Anniversary Bingo</option>
+            </optgroup>
+            <optgroup label="Keepsakes">
+              <option>Memory Jar</option>
+              <option>Guest Book</option>
+              <option>Memory Jar &amp; Guest Book</option>
+              <option>Polaroid Photo Wall</option>
+            </optgroup>
+            <optgroup label="Ceremony">
+              <option>Toasts &amp; Speeches</option>
+              <option>Anniversary Vow Reading</option>
+              <option>Cake Cutting Ceremony</option>
+              <option>First Dance</option>
+              <option>Open Dancing</option>
+            </optgroup>
+            <optgroup label="Other">
+              <option>Lawn Games (general)</option>
+              <option>Kids Activity Table</option>
+              <option>Custom — add below</option>
+            </optgroup>
+          </select>
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="addActivity()" style="flex-shrink:0;margin-bottom:0;">+ Add</button>
+      </div>
+
+      <div id="activityList" style="margin-bottom:16px;"></div>
+
+      <label>Run of Show / Day-of Timeline</label>
+      <textarea id="runOfShow" placeholder="2:00 PM Doors open · 2:15 Couple arrives · 2:30 Toasts · 3:00 Cake cutting…" style="min-height:90px" oninput="debounce('vendors')"></textarea>
+      <label>Slideshow Creator</label>
+      <input type="text" id="slideshowWho" placeholder="Name of person responsible for slideshow" oninput="debounce('vendors')">
+      <label>Other Notes</label>
+      <textarea id="entertainmentNotes" placeholder="Anything else for entertainment…" style="min-height:55px" oninput="debounce('vendors')"></textarea>
     </div>
   </div>
+
 </div>
 
 <!-- ══════════════════════════ BUDGET ══════════════════════════ -->
 <div class="section" id="section-budget">
   <div class="card">
     <div class="card-title"><span>💰</span> Budget Overview</div>
-    <label>Total Budget</label>
-    <input type="number" id="totalBudget" placeholder="e.g. 6000" oninput="debounce('budget');renderBudgetUI()">
-    <div style="margin-top:14px" id="budgetDisplay"></div>
+    <label>Total Budget ($)</label>
+    <input type="text" inputmode="decimal" id="totalBudget" placeholder="e.g. 6000" oninput="debounce('budget')">
+    <div style="margin-top:14px;">
+      <div style="display:grid;grid-template-columns:1fr 90px 90px 28px;gap:6px;padding:0 0 6px;border-bottom:1px solid var(--border);margin-bottom:2px;">
+        <div style="font-size:10px;text-transform:uppercase;color:var(--text-muted);font-weight:700;">Category</div>
+        <div style="font-size:10px;text-transform:uppercase;color:var(--text-muted);font-weight:700;text-align:right;">Est. ($)</div>
+        <div style="font-size:10px;text-transform:uppercase;color:var(--text-muted);font-weight:700;text-align:right;">Paid ($)</div>
+        <div></div>
+      </div>
+      <div id="budgetRows"></div>
+      <div id="budgetTotals" style="display:grid;grid-template-columns:1fr 90px 90px 28px;gap:6px;padding:8px 0 0;font-weight:700;border-top:1px solid var(--border);margin-top:2px;">
+        <div style="font-size:13px;">Total</div>
+        <div id="budgetTotalEst" style="font-size:14px;color:var(--gold-dark);text-align:right;">$0</div>
+        <div id="budgetTotalPaid" style="font-size:14px;text-align:right;">$0</div>
+        <div></div>
+      </div>
+      <div id="budgetBar" style="margin-top:10px;display:none;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:3px;">
+          <span id="budgetBarLabel"></span><span id="budgetBarPct"></span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="budgetBarFill" style="width:0%;"></div></div>
+      </div>
+    </div>
   </div>
-  <div style="margin-top:-4px;padding:0 0 4px;">
+  <div style="padding:0 0 8px;">
     <button class="btn btn-outline btn-sm" onclick="addBudgetLine()">+ Add Category</button>
   </div>
-  <div id="budgetEdit" style="display:none"></div>
 </div>
 
 <!-- ══════════════════════════ TASKS ══════════════════════════ -->
@@ -768,8 +841,19 @@ async function jbSave(){
 
 let _dbt={};
 function debounce(key,delay=900){clearTimeout(_dbt[key]);_dbt[key]=setTimeout(()=>{collectFields(key);jbSave();},delay);}
-function save(){lsSave(_s);jbSave();}
-function flash(){const el=document.getElementById('savedFlash');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800);}
+function save(){stampLastUpdated();lsSave(_s);jbSave();}
+function flash(){
+  const el=document.getElementById('savedFlash');
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),1800);
+}
+function stampLastUpdated(){
+  const now=new Date();
+  const str='Last Updated: '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true})+', '+now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const ts=document.getElementById('lastUpdated');
+  if(ts)ts.textContent=str;
+  _s.lastUpdated=str;
+}
 function setSyncStatus(msg){const el=document.getElementById('syncStatus');if(el)el.textContent=msg;}
 
 // ══════════════════════════════════════════
@@ -791,7 +875,7 @@ let _s={
 function defaultOrgs(){
   return [
     {id:'cindy',name:'Cindy / Drew',resp:'Venue · Food & Beverage · Entertainment · Setup & Clean Up',color:'cindy'},
-    {id:'sue',name:'Susan',resp:'Decorations · Setup & Clean Up',color:'sue'},
+    {id:'sue',name:'Sue',resp:'Decorations · Setup & Clean Up',color:'sue'},
     {id:'corey',name:'Corey',resp:'Guest List · E-Vites · Day-of Coordination · Setup & Clean Up',color:'corey'}
   ];
 }
@@ -821,6 +905,18 @@ function defaultTasks(){
     {id:uid(),text:'Confirm final headcount with venue & caterer',assigned:n1,due:'',category:'Catering',notes:'',done:false},
     {id:uid(),text:'Day-of decor setup',assigned:n2,due:'2026-11-07',category:'Decor',notes:'',done:false},
     {id:uid(),text:'Day-of coordination & timeline',assigned:n3,due:'2026-11-07',category:'General',notes:'',done:false},
+    // Schedule milestones
+    {id:uid(),text:'Send save-the-dates (if doing separately from e-vite)',assigned:n3,due:'',category:'Guests',notes:'',done:false},
+    {id:uid(),text:'Confirm vendor arrival times with all vendors',assigned:n1,due:'',category:'General',notes:'',done:false},
+    {id:uid(),text:'Create seating chart / table layout',assigned:n1,due:'',category:'Venue',notes:'',done:false},
+    {id:uid(),text:'Arrange overnight accommodations for out-of-town guests',assigned:n3,due:'',category:'Guests',notes:'',done:false},
+    {id:uid(),text:'Purchase / prepare thank-you cards for Chuck & Susan',assigned:n2,due:'',category:'General',notes:'',done:false},
+    {id:uid(),text:'Assign someone to greet guests at door',assigned:n3,due:'2026-11-07',category:'General',notes:'',done:false},
+    {id:uid(),text:'Prepare anniversary toasting glasses for Chuck & Susan',assigned:n1,due:'',category:'Catering',notes:'',done:false},
+    {id:uid(),text:'Confirm final menu selections with caterer',assigned:n1,due:'',category:'Catering',notes:'',done:false},
+    {id:uid(),text:'Print or display run-of-show for vendors',assigned:n3,due:'2026-11-07',category:'General',notes:'',done:false},
+    {id:uid(),text:'Decor setup complete before guests arrive',assigned:n2,due:'2026-11-07',category:'Decor',notes:'',done:false},
+    {id:uid(),text:'Post-event cleanup & venue walk-through',assigned:'All',due:'2026-11-07',category:'General',notes:'',done:false},
   ];
 }
 function uid(){return Math.random().toString(36).slice(2,9);}
@@ -830,7 +926,15 @@ function uid(){return Math.random().toString(36).slice(2,9);}
 // ══════════════════════════════════════════
 const sectionTitles={dashboard:'Home',resp:'Roles',venue:'Venues',guests:'Guests',menu:'Menu',vendors:'Vendors',budget:'Budget',tasks:'Tasks',notes:'Notes'};
 
-function switchSection(name){
+function switchSection(name,pushState){
+  if(pushState!==false){
+    // Push to browser history so back button works
+    if(name==='dashboard'){
+      history.pushState({section:'dashboard'},'','#');
+    } else {
+      history.pushState({section:name},'','#'+name);
+    }
+  }
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('section-'+name).classList.add('active');
   // back bar
@@ -842,7 +946,7 @@ function switchSection(name){
   if(name==='venue'){renderVenues();renderRespBanner('venue');}
   if(name==='guests'){renderGuests();renderRespBanner('guest');}
   if(name==='menu')renderRespBanner('menu');
-  if(name==='vendors'){renderAllVendors();renderRespBanner('vendor');}
+  if(name==='vendors'){renderAllVendors();renderActivities();renderRespBanner('vendor');}
   if(name==='budget')renderBudgetUI();
   if(name==='tasks'){renderTasks();populateOrgDropdowns();}
   if(name==='notes'){renderNotes();populateOrgDropdowns();}
@@ -866,7 +970,15 @@ function collectFields(key){
   if(key==='menu'){const d={};menuFields.forEach(f=>d[f]=v(f));_s.menu=d;}
   if(key==='vendors'){const d={};vpFields.forEach(f=>d[f]=v(f));_s.vendors_prefs=d;}
   if(key==='evite'){const d={};eviteFields.forEach(f=>d[f.replace('evite','').toLowerCase().replace(/^./,c=>c.toLowerCase())]=v(f));_s.evite=d;}
-  /* budget/orgs/venues/vendors/guests/tasks/notes mutate _s directly before calling save() */
+  if(key==='budget'){
+    _s.budget.total=v('totalBudget');
+    updateBudgetTotals();
+    // Update nav hint immediately
+    var bAmt=parseFloat(_s.budget.total)||0;
+    var bEst=(_s.budget.categories||[]).reduce(function(a,c){return a+(parseFloat(c.estimated)||0);},0);
+    sh('hint-budget',bAmt>0?'Total: $'+bAmt.toLocaleString()+(bEst>0?' · $'+bEst.toLocaleString()+' est':''):bEst>0?'$'+bEst.toLocaleString()+' estimated':'No budget set yet');
+    save();
+  }
 }
 
 function restoreFields(obj,fields){if(!obj)return;fields.forEach(f=>{const key=f.replace('evite','').toLowerCase().replace(/^./,c=>c.toLowerCase());if(obj[key]!==undefined)sv(f,obj[key]);else if(obj[f]!==undefined)sv(f,obj[f]);});}
@@ -954,6 +1066,13 @@ function removeOrg(id){
 
 function populateOrgDropdowns(){
   const names=_s.orgs.map(o=>o.name).concat(['All']);
+  // Also populate planning status owner filter
+  const psOf=document.getElementById('psOwnerFilter');
+  if(psOf){
+    const cur=psOf.value;
+    psOf.innerHTML='<option value="">All People</option>'+_s.orgs.map(o=>'<option value="'+o.name+'">'+o.name+'</option>').join('');
+    if(cur)psOf.value=cur;
+  }
   ['taskAssigned','noteAuthor'].forEach(id=>{
     const el=document.getElementById(id);if(!el)return;
     const cur=el.value;
@@ -1332,52 +1451,71 @@ function ownerClass(name){
 }
 
 function renderTasks(){
-  const done=_s.tasks.filter(t=>t.done).length;
-  const pct=_s.tasks.length?Math.round(done/_s.tasks.length*100):0;
-  document.getElementById('taskProgressLabel').textContent=`${done} of ${_s.tasks.length} complete`;
-  document.getElementById('taskPct').textContent=pct+'%';
-  document.getElementById('taskBar').style.width=pct+'%';
-  document.getElementById('stat-tasks').textContent=pct+'%';
+  try{
+    var tasks2=[].concat(_s.tasks);
+    var done2=tasks2.filter(function(t){return t.done;}).length;
+    var pct2=tasks2.length?Math.round(done2/tasks2.length*100):0;
+    var pl=document.getElementById('taskProgressLabel');
+    var pp=document.getElementById('taskPct');
+    var pb=document.getElementById('taskBar');
+    var st=document.getElementById('stat-tasks');
+    if(pl)pl.textContent=done2+' of '+tasks2.length+' complete';
+    if(pp)pp.textContent=pct2+'%';
+    if(pb)pb.style.width=pct2+'%';
+    if(st)st.textContent=pct2+'%';
 
-  const filterPerson=v('taskFilterAssigned');
-  const filterDone=v('taskFilterDone');
-  const filterCat=v('taskFilterCategory');
-  let tasks=[..._s.tasks];
-  if(filterPerson)tasks=tasks.filter(t=>t.assigned===filterPerson);
-  if(filterCat)tasks=tasks.filter(t=>t.category===filterCat);
-  if(filterDone==='open')tasks=tasks.filter(t=>!t.done);
-  if(filterDone==='done')tasks=tasks.filter(t=>t.done);
-  tasks.sort((a,b)=>a.done-b.done);
+    var filterPerson=v('taskFilterAssigned')||'';
+    var filterDone=v('taskFilterDone')||'';
+    var filterCat=v('taskFilterCategory')||'';
+    if(filterPerson)tasks2=tasks2.filter(function(t){return t.assigned===filterPerson;});
+    if(filterCat)tasks2=tasks2.filter(function(t){return t.category===filterCat;});
+    if(filterDone==='open')tasks2=tasks2.filter(function(t){return !t.done;});
+    if(filterDone==='done')tasks2=tasks2.filter(function(t){return t.done;});
 
-  const el=document.getElementById('taskList');
-  if(!tasks.length){el.innerHTML='<div class="empty"><div class="empty-text">No tasks match this filter.</div></div>';return;}
+    tasks2.sort(function(a,b){
+      if(a.done!==b.done)return a.done?1:-1;
+      if(!a.due&&!b.due)return 0;
+      if(!a.due)return 1;
+      if(!b.due)return -1;
+      return new Date(a.due)-new Date(b.due);
+    });
 
-  // Sort: overdue first (among open), then by due date, then no-due, then done
-  tasks.sort((a,b)=>{
-    if(a.done!==b.done)return a.done-b.done;
-    if(!a.due&&!b.due)return 0;
-    if(!a.due)return 1;
-    if(!b.due)return -1;
-    return new Date(a.due)-new Date(b.due);
-  });
+    var el=document.getElementById('taskList');
+    if(!el)return;
+    if(!tasks2.length){el.innerHTML='<div class="empty"><div class="empty-text">No tasks match this filter.</div></div>';return;}
 
-  el.innerHTML=tasks.map(t=>{
-    const dueInfo=dueDateInfo(t.due,t.done);
-    return `<div class="task-item" style="${dueInfo.overdue?'background:var(--danger-bg);border-radius:var(--radius-sm);padding:9px 8px;margin-bottom:2px;':''}">
-      <div class="task-check ${t.done?'done':''}" onclick="toggleTask('${t.id}')">${t.done?'✓':''}</div>
-      <div style="flex:1">
-        <div class="task-name ${t.done?'done':''}">${t.text}</div>
-        <div class="task-meta" style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:3px;">
-          <span class="owner-tag ${ownerClass(t.assigned)}">${t.assigned}</span>
-          ${t.category?`<span style="color:var(--text-muted)">· ${t.category}</span>`:''}
-          ${dueInfo.html}
-        </div>
-        ${t.notes?`<div style="margin-top:3px;font-family:'Helvetica Neue',sans-serif;font-size:11px;font-style:italic;color:var(--text-muted);">${t.notes}</div>`:''}
-      </div>
-      <button class="btn btn-outline btn-sm" style="flex-shrink:0;margin-right:4px;" onclick="openTaskModal('${t.id}')">✏️</button>
-      <button class="btn btn-danger" style="flex-shrink:0;" onclick="removeTask('${t.id}')">✕</button>
-    </div>`;
-  }).join('');
+    var html='';
+    for(var i=0;i<tasks2.length;i++){
+      var t=tasks2[i];
+      var di=dueDateInfo(t.due,t.done);
+      var rowBg=di.overdue?'background:var(--danger-bg);border-radius:var(--radius-sm);padding:9px 8px;margin-bottom:2px;':'';
+      html+='<div class="task-item" style="'+rowBg+'" data-id="'+t.id+'">';
+      html+='<div class="task-check '+(t.done?'done':'')+'" data-action="toggle" data-id="'+t.id+'">'+(t.done?'&#10003;':'')+'</div>';
+      html+='<div style="flex:1;">';
+      html+='<div class="task-name '+(t.done?'done':'')+'">'+t.text+'</div>';
+      html+='<div class="task-meta" style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:3px;">';
+      html+='<span class="owner-tag '+ownerClass(t.assigned)+'">'+t.assigned+'</span>';
+      if(t.category)html+='<span style="color:var(--text-muted);">&#183; '+t.category+'</span>';
+      html+=di.html;
+      html+='</div>';
+      if(t.notes)html+='<div style="margin-top:3px;font-size:11px;font-style:italic;color:var(--text-muted);">'+t.notes+'</div>';
+      html+='</div>';
+      html+='<button class="btn btn-outline btn-sm" style="flex-shrink:0;margin-right:4px;" data-action="edit" data-id="'+t.id+'">&#9998;</button>';
+      html+='<button class="btn btn-danger" style="flex-shrink:0;" data-action="remove" data-id="'+t.id+'">&#10005;</button>';
+      html+='</div>';
+    }
+    el.innerHTML=html;
+    // Use event delegation instead of inline onclick
+    el.onclick=function(ev){
+      var btn=ev.target.closest('[data-action]');
+      if(!btn)return;
+      var id=btn.getAttribute('data-id');
+      var action=btn.getAttribute('data-action');
+      if(action==='toggle')toggleTask(id);
+      else if(action==='edit')openTaskModal(id);
+      else if(action==='remove')removeTask(id);
+    };
+  }catch(e){console.error('renderTasks:',e);}
 }
 
 function dueDateInfo(due,done){
@@ -1408,60 +1546,148 @@ function addNote(){
 }
 function removeNote(id){if(!confirm('Remove?'))return;_s.notes=_s.notes.filter(n=>n.id!==id);save();renderNotes();}
 function renderNotes(){
-  const el=document.getElementById('notesList');
-  if(!_s.notes.length){el.innerHTML='<div class="empty"><div class="empty-icon">📝</div><div class="empty-text">No notes yet.</div></div>';return;}
-  el.innerHTML=_s.notes.map(n=>`
-    <div class="note-item">
-      <div style="display:flex;justify-content:space-between;">
-        <div style="flex:1;font-size:14px;line-height:1.5;">${n.text}</div>
-        <button class="btn btn-danger" style="margin-left:8px;flex-shrink:0;" onclick="removeNote('${n.id}')">✕</button>
-      </div>
-      <div class="note-meta"><span class="owner-tag ${ownerClass(n.author)}">${n.author}</span> · ${n.date}</div>
-    </div>`).join('');
+  try{
+    var el=document.getElementById('notesList');
+    if(!el)return;
+    if(!_s.notes||!_s.notes.length){
+      el.innerHTML='<div class="empty"><div class="empty-icon">📝</div><div class="empty-text">No notes yet.</div></div>';
+      return;
+    }
+    var html='';
+    for(var i=0;i<_s.notes.length;i++){
+      var n=_s.notes[i];
+      html+='<div class="note-item">';
+      html+='<div style="display:flex;justify-content:space-between;">';
+      html+='<div style="flex:1;font-size:14px;line-height:1.5;">'+n.text+'</div>';
+      html+='<button class="btn btn-danger" style="margin-left:8px;flex-shrink:0;" data-action="remove" data-id="'+n.id+'">&#10005;</button>';
+      html+='</div>';
+      html+='<div class="note-meta"><span class="owner-tag '+ownerClass(n.author)+'">'+n.author+'</span> · '+n.date+'</div>';
+      html+='</div>';
+    }
+    el.innerHTML=html;
+    el.onclick=function(ev){
+      var btn=ev.target.closest('[data-action]');
+      if(!btn)return;
+      if(btn.getAttribute('data-action')==='remove')removeNote(btn.getAttribute('data-id'));
+    };
+  }catch(e){console.error('renderNotes:',e);}
 }
 
 // ══════════════════════════════════════════
 // BUDGET
 // ══════════════════════════════════════════
 function addBudgetLine(){const name=prompt('Category name:');if(!name)return;_s.budget.categories.push({name,estimated:'',actual:''});save();renderBudgetUI();}
-function updateBudgetLine(i,field,val){_s.budget.categories[i][field]=val;save();renderBudgetUI();}
+function updateBudgetLine(i,field,val){if(_s.budget.categories[i])_s.budget.categories[i][field]=val;updateBudgetTotals();save();}
+function updateBudgetTotals(){
+  var cats=(_s.budget&&_s.budget.categories)||[];
+  var totalSpent=cats.reduce(function(a,c){return a+(parseFloat(c.actual)||0);},0);
+  var totalEst=cats.reduce(function(a,c){return a+(parseFloat(c.estimated)||0);},0);
+  var budgetAmt=parseFloat((_s.budget&&_s.budget.total)||0)||0;
+  var te=document.getElementById('budgetTotalEst');
+  var tp=document.getElementById('budgetTotalPaid');
+  if(te)te.textContent='$'+totalEst.toLocaleString();
+  if(tp)tp.textContent='$'+totalSpent.toLocaleString();
+  // Stat card shows Total Budget if set, else sum of estimates
+  var displayAmt=budgetAmt||totalEst;
+  var sb=document.getElementById('stat-budget');
+  if(sb)sb.textContent='$'+(displayAmt>=1000?(displayAmt/1000).toFixed(1)+'k':displayAmt.toFixed(0));
+  // Also update progress bar if it exists
+  var budget=budgetAmt;
+  var pct=budget?Math.min(100,Math.round(totalSpent/budget*100)):0;
+  var barFill=document.getElementById('budgetBarFill');
+  var barEl=document.getElementById('budgetBar');
+  var barLabel=document.getElementById('budgetBarLabel');
+  var barPct=document.getElementById('budgetBarPct');
+  if(barEl)barEl.style.display=budget?'':'none';
+  if(budget&&barFill){
+    barFill.style.width=pct+'%';
+    barFill.style.background=pct>90?'var(--danger)':'linear-gradient(90deg,var(--gold),var(--gold-mid))';
+    if(barLabel)barLabel.textContent='Of $'+budget.toLocaleString()+' total budget';
+    if(barPct)barPct.textContent=pct+'%';
+  }
+}
 function removeBudgetLine(i){_s.budget.categories.splice(i,1);save();renderBudgetUI();}
 function renderBudgetUI(){
-  sv('totalBudget',_s.budget.total);
-  const cats=_s.budget.categories||[];
-  const totalSpent=cats.reduce((a,c)=>a+(parseFloat(c.actual)||0),0);
-  const totalEst=cats.reduce((a,c)=>a+(parseFloat(c.estimated)||0),0);
-  const budget=parseFloat(_s.budget.total)||0;
-  const pct=budget?Math.min(100,Math.round(totalSpent/budget*100)):0;
-  document.getElementById('stat-budget').textContent='$'+(totalEst>=1000?(totalEst/1000).toFixed(1)+'k':totalEst.toFixed(0));
+  try{
+    sv('totalBudget',_s.budget.total);
+    var cats=(_s.budget&&_s.budget.categories)||[];
+    var totalSpent=cats.reduce(function(a,c){return a+(parseFloat(c.actual)||0);},0);
+    var totalEst=cats.reduce(function(a,c){return a+(parseFloat(c.estimated)||0);},0);
+    var budget=parseFloat(_s.budget.total)||0;
+    var pct=budget?Math.min(100,Math.round(totalSpent/budget*100)):0;
 
-  const hdr=`<div style="display:grid;grid-template-columns:1fr 90px 90px 28px;gap:6px;padding:0 0 6px;border-bottom:1px solid var(--border);margin-bottom:2px;">
-    <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);font-weight:700;">Category</div>
-    <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);font-weight:700;text-align:right;">Est. ($)</div>
-    <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);font-weight:700;text-align:right;">Paid ($)</div>
-    <div></div></div>`;
+    // Update stat card
+    var sb=document.getElementById('stat-budget');
+    if(sb)sb.textContent='$'+(totalEst>=1000?(totalEst/1000).toFixed(1)+'k':totalEst.toFixed(0));
 
-  const rows=cats.map((c,i)=>`
-    <div style="display:grid;grid-template-columns:1fr 90px 90px 28px;gap:6px;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);">
-      <div style="font-size:13px;line-height:1.2;">${c.name}</div>
-      <input type="number" placeholder="0" value="${c.estimated}"
-        oninput="updateBudgetLine(${i},'estimated',this.value)"
-        style="padding:5px 6px;font-size:12px;text-align:right;background:var(--surface2);">
-      <input type="number" placeholder="0" value="${c.actual}"
-        oninput="updateBudgetLine(${i},'actual',this.value)"
-        style="padding:5px 6px;font-size:12px;text-align:right;background:var(--surface2);">
-      <button onclick="removeBudgetLine(${i})"
-        style="background:none;border:none;color:var(--danger);font-size:18px;cursor:pointer;padding:0;line-height:1;text-align:center;">×</button>
-    </div>`).join('');
+    // Update totals row (always safe - no inputs)
+    var te=document.getElementById('budgetTotalEst');
+    var tp=document.getElementById('budgetTotalPaid');
+    if(te)te.textContent='$'+totalEst.toLocaleString();
+    if(tp)tp.textContent='$'+totalSpent.toLocaleString();
 
-  const tot=`<div style="display:grid;grid-template-columns:1fr 90px 90px 28px;gap:6px;padding:8px 0 0;font-weight:700;">
-    <div style="font-size:13px;">Total</div>
-    <div style="font-size:14px;color:var(--gold-dark);text-align:right;">$${totalEst.toLocaleString()}</div>
-    <div style="font-size:14px;text-align:right;">$${totalSpent.toLocaleString()}</div>
-    <div></div></div>`;
+    // Update progress bar
+    var barEl=document.getElementById('budgetBar');
+    var barFill=document.getElementById('budgetBarFill');
+    var barLabel=document.getElementById('budgetBarLabel');
+    var barPct=document.getElementById('budgetBarPct');
+    if(barEl){
+      barEl.style.display=budget?'':'none';
+      if(budget&&barFill){
+        barFill.style.width=pct+'%';
+        barFill.style.background=pct>90?'var(--danger)':'linear-gradient(90deg,var(--gold),var(--gold-mid))';
+        if(barLabel)barLabel.textContent='Of $'+budget.toLocaleString()+' total budget';
+        if(barPct)barPct.textContent=pct+'%';
+      }
+    }
 
-  const bar=budget?`<div style="margin-top:10px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:3px;"><span>Of $${budget.toLocaleString()} budget</span><span>${pct}%</span></div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${pct>90?'var(--danger)':'linear-gradient(90deg,var(--gold),var(--gold-mid))'}"></div></div></div>`:'';
-  document.getElementById('budgetDisplay').innerHTML=hdr+rows+tot+bar;
+    // Rebuild rows only if count changed; otherwise just update input values
+    var container=document.getElementById('budgetRows');
+    if(!container)return;
+    var existingRows=container.querySelectorAll('.budget-data-row');
+
+    if(existingRows.length!==cats.length){
+      // Rebuild all rows
+      var html='';
+      for(var i=0;i<cats.length;i++){
+        html+='<div class="budget-data-row" style="display:grid;grid-template-columns:1fr 90px 90px 28px;gap:6px;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);">';
+        html+='<div style="font-size:13px;">'+cats[i].name+'</div>';
+        html+='<input type="text" inputmode="decimal" data-row="'+i+'" data-field="estimated" placeholder="0" value="'+(cats[i].estimated||'')+'" style="padding:5px 6px;font-size:12px;text-align:right;background:var(--surface2);">';
+        html+='<input type="text" inputmode="decimal" data-row="'+i+'" data-field="actual" placeholder="0" value="'+(cats[i].actual||'')+'" style="padding:5px 6px;font-size:12px;text-align:right;background:var(--surface2);">';
+        html+='<button data-remove="'+i+'" style="background:none;border:none;color:var(--danger);font-size:18px;cursor:pointer;padding:0;line-height:1;">&#215;</button>';
+        html+='</div>';
+      }
+      container.innerHTML=html;
+      // Attach event delegation once
+      container.oninput=function(ev){
+        var inp=ev.target;
+        if(!inp.dataset.row)return;
+        var row=parseInt(inp.dataset.row);
+        var field=inp.dataset.field;
+        if(field&&row>=0&&_s.budget.categories[row]){
+          _s.budget.categories[row][field]=inp.value;
+          updateBudgetTotals();
+          save();
+        }
+      };
+      container.onclick=function(ev){
+        var btn=ev.target.closest('[data-remove]');
+        if(!btn)return;
+        var idx=parseInt(btn.getAttribute('data-remove'));
+        _s.budget.categories.splice(idx,1);
+        save();renderBudgetUI();
+      };
+    } else {
+      // Just update values without rebuilding (preserves focus)
+      existingRows.forEach(function(row,i){
+        if(i<cats.length){
+          var inputs=row.querySelectorAll('input');
+          if(inputs[0]&&document.activeElement!==inputs[0])inputs[0].value=cats[i].estimated||'';
+          if(inputs[1]&&document.activeElement!==inputs[1])inputs[1].value=cats[i].actual||'';
+        }
+      });
+    }
+  }catch(e){console.error('renderBudgetUI:',e);}
 }
 
 // ══════════════════════════════════════════
@@ -1476,7 +1702,10 @@ function updateDashboard(){
   renderTasks();
   const cats=_s.budget?.categories||[];
   const est=cats.reduce((a,c)=>a+(parseFloat(c.estimated)||0),0);
-  document.getElementById('stat-budget').textContent='$'+(est>=1000?(est/1000).toFixed(1)+'k':est.toFixed(0));
+  const budgetTotal=parseFloat(_s.budget?.total)||0;
+  const displayAmt=budgetTotal||est;
+  const sbEl=document.getElementById('stat-budget');
+  if(sbEl)sbEl.textContent='$'+(displayAmt>=1000?(displayAmt/1000).toFixed(1)+'k':displayAmt.toFixed(0));
 
   // Nav button hints
   const approvedVenue=_s.venues.find(v=>v.status==='approved');
@@ -1494,7 +1723,7 @@ function updateDashboard(){
   sh('hint-guests',guestTotal>0?`${guestTotal}/50 added · ${guestConfirmed} confirmed`:'No guests added yet');
   sh('hint-menu',_s.menu?.catererName?'Caterer: '+_s.menu.catererName:'Food · Bar · Desserts');
   sh('hint-vendors',[approvedDJ?'DJ ✓':'No DJ yet',approvedPhoto?'Photo ✓':''].filter(x=>x).join(' · ')||'DJ · Photo · Decor · Fun');
-  sh('hint-budget',est>0?'$'+est.toLocaleString()+' estimated':'No budget set yet');
+  sh('hint-budget',budgetTotal>0?'Total: $'+budgetTotal.toLocaleString()+(est>0?' · $'+est.toLocaleString()+' est':''):est>0?'$'+est.toLocaleString()+' estimated':'No budget set yet');
   sh('hint-tasks',taskTotal>0?`${taskDone}/${taskTotal} complete (${taskPct}%)`:'No tasks yet');
   sh('hint-notes',noteCount>0?noteCount+' note'+(noteCount!==1?'s':'')+' from the team':'No notes yet');
 
@@ -1528,10 +1757,12 @@ function updateDashboard(){
 
     // Apply filter
     const filter=v('psFilter');
+    const ownerFilter=v('psOwnerFilter');
     if(filter==='off'&&statusKey!=='off')return '';
     if(filter==='soon'&&statusKey!=='soon')return '';
     if(filter==='done'&&statusKey!=='done')return '';
     if(filter==='open'&&statusKey==='done')return '';
+    if(ownerFilter&&orgName(ownerColor)!==ownerFilter)return '';
 
     const dlStr=deadlineDate.toLocaleDateString('en-US',{month:'short',day:'numeric'});
     const owner=orgName(ownerColor);
@@ -1622,6 +1853,12 @@ function mergeData(data){
 function bootApp(status){
   // status: 'cloud' | 'local' | 'offline'
   if(!_s.tasks.length)_s.tasks=defaultTasks();
+  // Set last updated from saved state if available
+  const ts=document.getElementById('lastUpdated');
+  if(ts){
+    if(_s.lastUpdated){ts.textContent='Last Updated: '+_s.lastUpdated;}
+    else{ts.textContent='';}
+  }
   
   const dot=document.getElementById('syncDot');
   if(status==='cloud'){
@@ -1640,8 +1877,69 @@ function bootApp(status){
   renderBudgetUI();
   renderVenues();
   renderAllVendors();
+  renderActivities();
   updateHeaderLocation();
 }
+
+
+// ══════════════════════════════════════════
+// ACTIVITIES (Fun panel)
+// ══════════════════════════════════════════
+function addActivity(){
+  var picker=document.getElementById('activityPicker');
+  if(!picker||!picker.value)return;
+  var name=picker.value;
+  if(!_s.vendors_prefs.activities)_s.vendors_prefs.activities=[];
+  // Avoid duplicates
+  if(_s.vendors_prefs.activities.find(function(a){return a.name===name;})){
+    picker.value=''; return;
+  }
+  _s.vendors_prefs.activities.push({name:name,confirmed:false,notes:''});
+  picker.value='';
+  save();
+  renderActivities();
+}
+function toggleActivity(idx){
+  if(!_s.vendors_prefs.activities||!_s.vendors_prefs.activities[idx])return;
+  _s.vendors_prefs.activities[idx].confirmed=!_s.vendors_prefs.activities[idx].confirmed;
+  save();renderActivities();
+}
+function removeActivity(idx){
+  if(!_s.vendors_prefs.activities)return;
+  _s.vendors_prefs.activities.splice(idx,1);
+  save();renderActivities();
+}
+function renderActivities(){
+  var el=document.getElementById('activityList');
+  if(!el)return;
+  var acts=(_s.vendors_prefs&&_s.vendors_prefs.activities)||[];
+  if(!acts.length){
+    el.innerHTML='<div style="font-size:13px;color:var(--text-muted);padding:8px 0;font-style:italic;">No activities added yet.</div>';
+    return;
+  }
+  var html='';
+  for(var i=0;i<acts.length;i++){
+    var a=acts[i];
+    html+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">';
+    html+='<div class="task-check '+(a.confirmed?'done':'')+'" data-action="toggle" data-idx="'+i+'">'+(a.confirmed?'&#10003;':'')+'</div>';
+    html+='<div style="flex:1;font-size:14px;'+(a.confirmed?'color:var(--text-muted);text-decoration:line-through;':'')+'">'+a.name+'</div>';
+    html+='<button class="btn btn-danger" data-action="remove" data-idx="'+i+'">&#10005;</button>';
+    html+='</div>';
+  }
+  el.innerHTML=html;
+  el.onclick=function(ev){
+    var btn=ev.target.closest('[data-action]');
+    if(!btn)return;
+    var idx=parseInt(btn.getAttribute('data-idx'));
+    if(btn.getAttribute('data-action')==='toggle')toggleActivity(idx);
+    else if(btn.getAttribute('data-action')==='remove')removeActivity(idx);
+  };
+}
+// Browser back/forward button support
+window.addEventListener('popstate',function(e){
+  var section=(e.state&&e.state.section)||'dashboard';
+  switchSection(section,false);
+});
 
 async function init(){
   // Step 1: Load from localStorage immediately so app always appears fast
