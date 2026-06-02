@@ -213,6 +213,28 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .app-header .header-title{font-size:1.8rem;}
 .modal{border-radius:var(--radius);margin-bottom:2rem;}
 }
+
+/* SPLASH */
+.splash{position:fixed;inset:0;background:#0E0C08;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;}
+.splash.hidden{display:none;}
+.splash-title{font-family:'Helvetica Neue',sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.splash-name{font-size:1.6rem;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-0.5px;}
+.splash-sub{font-family:'Helvetica Neue',sans-serif;font-size:12px;color:var(--text-muted);margin-bottom:2rem;}
+.splash-question{font-family:'Helvetica Neue',sans-serif;font-size:13px;color:var(--text-muted);margin-bottom:16px;text-align:center;}
+.avatar-grid{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;width:100%;max-width:400px;}
+.avatar-card{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;padding:16px 20px;border-radius:var(--radius);border:2px solid var(--border);background:var(--surface);transition:all 0.15s;-webkit-tap-highlight-color:transparent;flex:1;min-width:100px;}
+.avatar-card:active{transform:scale(0.95);}
+.avatar-card:hover{border-color:var(--gold);background:var(--surface2);}
+.avatar-emoji{font-size:48px;line-height:1;}
+.avatar-name{font-family:'Helvetica Neue',sans-serif;font-size:13px;font-weight:700;color:var(--text);text-align:center;}
+
+
+/* CHANGELOG */
+.cl-item{padding:10px 0;border-bottom:1px solid var(--border);font-family:'Helvetica Neue',sans-serif;}
+.cl-item:last-child{border-bottom:none;}
+.cl-who{font-size:11px;font-weight:700;margin-bottom:2px;}
+.cl-what{font-size:13px;color:var(--text);margin-bottom:2px;}
+.cl-when{font-size:10px;color:var(--text-muted);}
 </style>
 </head>
 <body>
@@ -228,6 +250,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="header-divider"><span>✦</span></div>
 </div>
 
+<!-- SPLASH SCREEN -->
+<div class="splash" id="splashScreen">
+  <div class="splash-title">50th Anniversary</div>
+  <div class="splash-name">Chuck &amp; Susan Hepfer</div>
+  <div class="splash-sub">Golden Anniversary · November 7, 2026</div>
+  <div class="splash-question">Who is planning today?</div>
+  <div class="avatar-grid" id="avatarGrid"></div>
+</div>
 <div id="lastUpdated" style="background:#0E0C08;text-align:right;padding:3px 12px 3px;font-family:'Helvetica Neue',sans-serif;font-size:10px;color:rgba(212,168,67,0.6);letter-spacing:0.2px;min-height:18px;"></div>
 
 <!-- BACK BAR — shown on all non-home sections -->
@@ -255,7 +285,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="stat-card" onclick="switchSection('venue')" style="cursor:pointer;" title="Go to Venues"><div class="stat-icon">📅</div><div class="stat-number" id="stat-days">—</div><div class="stat-label">Days Away</div></div>
     <div class="stat-card" onclick="switchSection('guests')" style="cursor:pointer;" title="Go to Guests"><div class="stat-icon">👥</div><div class="stat-number" id="stat-guests">0</div><div class="stat-label">Guests</div></div>
     <div class="stat-card" onclick="switchSection('tasks')" style="cursor:pointer;" title="Go to Tasks"><div class="stat-icon">✅</div><div class="stat-number" id="stat-tasks">0%</div><div class="stat-label">Tasks Done</div></div>
-    <div class="stat-card" onclick="switchSection('budget')" style="cursor:pointer;" title="Go to Budget"><div class="stat-icon">💰</div><div class="stat-number" id="stat-budget">$0</div><div class="stat-label">Budgeted</div></div>
+    <div class="stat-card" onclick="openModal('wikiModal')" style="cursor:pointer;" title="Open Wiki"><div class="stat-icon">📖</div><div class="stat-number" style="font-size:16px;font-weight:700;">Wiki</div><div class="stat-label">How to Use</div></div>
   </div>
 
   <!-- NAV GRID — Roles & Tasks first row, then planning sections -->
@@ -295,9 +325,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <span class="nav-btn-label">Budget</span>
       <span class="nav-btn-hint" id="hint-budget">$0 estimated</span>
     </div>
-    <div class="nav-btn" onclick="switchSection('notes')">
+    <div class="nav-btn" onclick="switchSection('notes');markNotesSeen()" id="notesNavBtn">
       <span class="nav-btn-icon">📝</span>
-      <span class="nav-btn-label">Notes</span>
+      <span class="nav-btn-label">Notes <span id="notesNewBadge" style="display:none;background:var(--danger);color:white;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;vertical-align:middle;font-family:'Helvetica Neue',sans-serif;">NEW</span></span>
       <span class="nav-btn-hint" id="hint-notes">Family notes &amp; updates</span>
     </div>
   </div>
@@ -320,6 +350,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
     </div>
     <div id="dashboardStatus"></div>
+  </div>
+
+  <div style="margin-top:10px;">
+    <button class="btn btn-outline" style="width:100%;justify-content:center;gap:8px;" onclick="openModal('changelogModal');renderChangelog()">📋 View Change Log</button>
   </div>
 </div>
 
@@ -579,7 +613,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="card">
     <div class="card-title"><span>💰</span> Budget Overview</div>
     <label>Total Budget ($)</label>
-    <input type="text" inputmode="decimal" id="totalBudget" placeholder="e.g. 6000" oninput="syncBudgetStat();debounce('budget')">
+    <input type="text" inputmode="decimal" id="totalBudget" placeholder="e.g. 6000" oninput="_s.budget.total=this.value;syncBudgetStat();debounce('budget')" >
     <div style="margin-top:14px;">
       <div style="display:grid;grid-template-columns:1fr 90px 90px 28px;gap:6px;padding:0 0 6px;border-bottom:1px solid var(--border);margin-bottom:2px;">
         <div style="font-size:10px;text-transform:uppercase;color:var(--text-muted);font-weight:700;">Category</div>
@@ -673,6 +707,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <label>Deposit Status</label>
     <select id="v_deposit"><option value="">—</option><option>Not paid</option><option>Partial deposit</option><option>Paid in full</option></select>
     <label>Notes</label><textarea id="v_notes" placeholder="Setup time, A/V, tables included, restrictions…" style="min-height:65px"></textarea>
+    <label>Photos</label>
+    <input type="file" id="venuePhotoInput" accept="image/*" multiple style="display:none;" onchange="uploadVenuePhotos()">
+    <button class="btn btn-gold btn-block" style="margin-bottom:10px;" onclick="document.getElementById('venuePhotoInput').click()">📷 Upload Venue Photos</button>
+    <div id="venuePhotoStatus" style="font-family:'Helvetica Neue',sans-serif;font-size:11px;color:var(--text-muted);margin-bottom:8px;text-align:center;"></div>
+    <div id="venuePhotoPreview" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;"></div>
     <div style="display:flex;gap:8px;margin-top:14px;">
       <button class="btn btn-gold btn-block" onclick="saveVenueEntry()">Save Venue</button>
     </div>
@@ -842,14 +881,7 @@ async function jbSave(){
 let _dbt={};
 function debounce(key,delay=900){clearTimeout(_dbt[key]);_dbt[key]=setTimeout(()=>{collectFields(key);jbSave();},delay);}
 function save(){stampLastUpdated();lsSave(_s);jbSave();}
-function syncBudgetStat(){
-  var inp=document.getElementById('totalBudget');
-  var val=inp?parseFloat(inp.value)||0:parseFloat((_s.budget&&_s.budget.total)||0)||0;
-  var sb=document.getElementById('stat-budget');
-  if(sb)sb.textContent=val?'$'+(val>=1000?(val/1000).toFixed(1)+'k':val.toFixed(0)):'$0';
-  var hintVal=val?'Total budget: $'+val.toLocaleString():'No budget set yet';
-  sh('hint-budget',hintVal);
-}
+function syncBudgetStat(){/* budget stat card removed */sh('hint-budget',(_s.budget&&_s.budget.total)?'Total: $'+parseFloat(_s.budget.total).toLocaleString():'No budget set');}
 function flash(){
   const el=document.getElementById('savedFlash');
   el.classList.add('show');
@@ -884,11 +916,27 @@ function defaultOrgs(){
   return [
     {id:'cindy',name:'Cindy / Drew',resp:'Venue · Food & Beverage · Entertainment · Setup & Clean Up',color:'cindy'},
     {id:'sue',name:'Sue',resp:'Decorations · Setup & Clean Up',color:'sue'},
-    {id:'corey',name:'Corey',resp:'Guest List · E-Vites · Day-of Coordination · Setup & Clean Up',color:'corey'}
+    {id:'corey',name:'Corey / Brie',resp:'Guest List · E-Vites · Day-of Coordination · Setup & Clean Up',color:'corey'}
   ];
 }
 function defaultBudget(){
-  return [{name:'Venue Rental',estimated:'',actual:''},{name:'Catering / Food',estimated:'',actual:''},{name:'Bar & Alcohol',estimated:'',actual:''},{name:'Bartender',estimated:'',actual:''},{name:'DJ / Music',estimated:'',actual:''},{name:'Photography',estimated:'',actual:''},{name:'Decorations',estimated:'',actual:''},{name:'Anniversary Cake',estimated:'',actual:''},{name:'Entertainment & Games',estimated:'',actual:''},{name:'E-Vites & Printing',estimated:'',actual:''},{name:'Miscellaneous',estimated:'',actual:''}];
+  return [
+    {name:'Venue Rental',estimated:'',actual:''},
+    {name:'Catering / Food',estimated:'',actual:''},
+    {name:'Beverages / Bar',estimated:'',actual:''},
+    {name:'Bartender',estimated:'',actual:''},
+    {name:'DJ / Music',estimated:'',actual:''},
+    {name:'Photography',estimated:'',actual:''},
+    {name:'Decorations & Florals',estimated:'',actual:''},
+    {name:'Anniversary Cake',estimated:'',actual:''},
+    {name:'Dessert Table',estimated:'',actual:''},
+    {name:'Entertainment & Games',estimated:'',actual:''},
+    {name:'Photo Booth',estimated:'',actual:''},
+    {name:'E-Vites & Printing',estimated:'',actual:''},
+    {name:'Party Favors',estimated:'',actual:''},
+    {name:'Transportation',estimated:'',actual:''},
+    {name:'Miscellaneous',estimated:'',actual:''}
+  ];
 }
 function defaultTasks(){
   const orgs=_s.orgs;
@@ -975,14 +1023,12 @@ const vpFields=['djSongs','djNoPlay','djSpecial','photoShots','videoNeeded','dec
 const eviteFields=['evitePlatform','eviteLink','eviteSendDate','eviteRsvpDeadline','eviteNotes'];
 
 function collectFields(key){
-  if(key==='menu'){const d={};menuFields.forEach(f=>d[f]=v(f));_s.menu=d;}
-  if(key==='vendors'){const d={};vpFields.forEach(f=>d[f]=v(f));_s.vendors_prefs=d;}
-  if(key==='evite'){const d={};eviteFields.forEach(f=>d[f.replace('evite','').toLowerCase().replace(/^./,c=>c.toLowerCase())]=v(f));_s.evite=d;}
+  if(key==='menu'){const d={};menuFields.forEach(f=>d[f]=v(f));_s.menu=d;addChangelogEntry('Menu','Updated menu details');}
+  if(key==='vendors'){const d={};vpFields.forEach(f=>d[f]=v(f));_s.vendors_prefs=d;addChangelogEntry('Vendors','Updated vendor details');}
+  if(key==='evite'){const d={};eviteFields.forEach(f=>d[f.replace('evite','').toLowerCase().replace(/^./,c=>c.toLowerCase())]=v(f));_s.evite=d;addChangelogEntry('Guests','Updated e-vite info');}
   if(key==='budget'){
     _s.budget.total=v('totalBudget');
-    updateBudgetTotals();
-    // Update nav hint immediately
-    var bAmt=parseFloat(_s.budget.total)||0;sh('hint-budget',bAmt>0?'Total budget: $'+bAmt.toLocaleString():'No budget set yet');
+    syncBudgetStat();
     save();
   }
 }
@@ -1112,20 +1158,25 @@ function openModal_venue(editId){
     const ven=_s.venues.find(v=>v.id===editId);if(!ven)return;
     document.getElementById('venueModalTitle').textContent='Edit Venue';
     ['name','address','contact','contactInfo','capacity','cost','type','catering','status','parking','deposit','notes'].forEach(f=>sv('v_'+f,ven[f]));
+  _pendingVenuePhotos=[];
+  if(ven.photos&&ven.photos.length){renderVenuePhotoPreview(ven.photos);_pendingVenuePhotos=ven.photos.slice();}
   } else {
     document.getElementById('venueModalTitle').textContent='Add Venue';
     ['v_name','v_address','v_contact','v_contactInfo','v_capacity','v_cost','v_parking','v_notes'].forEach(id=>sv(id,''));
     sv('v_type','');sv('v_catering','');sv('v_status','researching');sv('v_deposit','');
   }
+  _pendingVenuePhotos=[];document.getElementById('venuePhotoPreview').innerHTML='';document.getElementById('venuePhotoStatus').textContent='';
   document.getElementById('venueModal').classList.add('open');
 }
 function saveVenueEntry(){
   const name=v('v_name').trim();if(!name){alert('Venue name required.');return;}
   const editId=v('venueEditId');
-  const obj={id:editId||uid(),name,address:v('v_address'),contact:v('v_contact'),contactInfo:v('v_contactInfo'),capacity:v('v_capacity'),cost:v('v_cost'),type:v('v_type'),catering:v('v_catering'),status:v('v_status'),parking:v('v_parking'),deposit:v('v_deposit'),notes:v('v_notes')};
+  const obj={id:editId||uid(),name,address:v('v_address'),contact:v('v_contact'),contactInfo:v('v_contactInfo'),capacity:v('v_capacity'),cost:v('v_cost'),type:v('v_type'),catering:v('v_catering'),status:v('v_status'),parking:v('v_parking'),deposit:v('v_deposit'),notes:v('v_notes'),photos:_pendingVenuePhotos.slice()};
+  _pendingVenuePhotos=[];
   if(obj.status==='approved'){_s.venues.forEach(ven=>{if(ven.id!==obj.id)ven.status=ven.status==='approved'?'contacted':ven.status;});}
   if(editId){const idx=_s.venues.findIndex(ven=>ven.id===editId);if(idx>-1)_s.venues[idx]=obj;}
   else _s.venues.push(obj);
+  addChangelogEntry('Venues','Saved venue: '+v('v_name').slice(0,40));
   save();closeModal('venueModal');renderVenues();
 }
 function updateHeaderLocation(){
@@ -1171,6 +1222,7 @@ function renderVenues(){
         ${ven.type?'🏠 '+ven.type+(ven.catering?' · Catering: '+ven.catering:'')+'<br>':''}
         ${ven.parking?'🅿️ '+ven.parking+'<br>':''}
         ${ven.notes?'<div style="margin-top:4px;padding-top:4px;border-top:1px dashed var(--border)">'+ven.notes+'</div>':''}
+        ${ven.photos&&ven.photos.length?renderVenueCardPhotos(ven.id,ven.photos):''}
       </div>
       <div class="vcard-actions">
         ${!approved?`<button class="btn btn-green btn-sm" onclick="approveVenue('${ven.id}')">✓ Approve</button>`:`<button class="btn btn-outline btn-sm" onclick="approveVenue('x_none')">Unapprove</button>`}
@@ -1180,6 +1232,16 @@ function renderVenues(){
     </div>`;
   }).join('');
   updateHeaderLocation();
+  // Event delegation for photo delete buttons on venue cards
+  var vl=document.getElementById('venueList');
+  if(vl){
+    vl.onclick=function(ev){
+      var btn=ev.target.closest('[data-venue-id][data-photo-idx]');
+      if(!btn)return;
+      ev.preventDefault();
+      deleteVenuePhoto(btn.getAttribute('data-venue-id'),parseInt(btn.getAttribute('data-photo-idx')));
+    };
+  }
 }
 
 // ══════════════════════════════════════════
@@ -1285,6 +1347,7 @@ function saveGuest(){
   };
   if(editId){const idx=_s.guests.findIndex(g=>g.id===editId);if(idx>-1)_s.guests[idx]=obj;else _s.guests.push(obj);}
   else _s.guests.push(obj);
+  addChangelogEntry('Guests','Added guest: '+obj.name);
   save();closeModal('guestModal');renderGuests();
 }
 function removeGuest(id){if(!confirm('Remove this guest?'))return;_s.guests=_s.guests.filter(g=>g.id!==id);save();renderGuests();}
@@ -1444,6 +1507,7 @@ function saveTask(){
   const obj={id:editId||uid(),text,assigned:v('taskAssigned'),due:v('taskDue'),category:v('taskCategory'),notes:v('taskNotes'),done:false};
   if(editId){const idx=_s.tasks.findIndex(t=>t.id===editId);if(idx>-1){obj.done=_s.tasks[idx].done;_s.tasks[idx]=obj;}else _s.tasks.push(obj);}
   else _s.tasks.push(obj);
+  addChangelogEntry('Tasks','Saved task: '+v('taskInput').slice(0,40));
   save();closeModal('taskModal');renderTasks();
 }
 function toggleTask(id){const t=_s.tasks.find(t=>t.id===id);if(t)t.done=!t.done;save();renderTasks();}
@@ -1547,7 +1611,8 @@ function fmtDate(str){
 // ══════════════════════════════════════════
 function addNote(){
   const text=v('noteContent').trim();if(!text)return;
-  _s.notes.unshift({id:uid(),author:v('noteAuthor'),text,date:new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'})});
+  var _now=new Date();
+  _s.notes.unshift({id:uid(),author:v('noteAuthor'),text,date:_now.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'}),timestamp:_now.toISOString()});
   save();closeModal('noteModal');sv('noteContent','');renderNotes();
 }
 function removeNote(id){if(!confirm('Remove?'))return;_s.notes=_s.notes.filter(n=>n.id!==id);save();renderNotes();}
@@ -1724,12 +1789,23 @@ function updateDashboard(){
   sh('hint-venue',approvedVenue?'✓ '+approvedVenue.name:(_s.venues.length?_s.venues.length+' option'+(_s.venues.length!==1?'s':'')+' being researched':'No venues added yet'));
   sh('hint-guests',guestTotal>0?`${guestTotal}/50 added · ${guestConfirmed} confirmed`:'No guests added yet');
   sh('hint-menu',_s.menu?.catererName?'Caterer: '+_s.menu.catererName:'Food · Bar · Desserts');
-  sh('hint-vendors',[approvedDJ?'DJ ✓':'No DJ yet',approvedPhoto?'Photo ✓':''].filter(x=>x).join(' · ')||'DJ · Photo · Decor · Fun');
+  var djCount=(_s.vendors.dj||[]).length;
+  var photoCount=(_s.vendors.photo||[]).length;
+  var djHint=approvedDJ?'DJ: '+approvedDJ.name:(djCount>0?djCount+' DJ option'+(djCount>1?'s':''):'No DJ yet');
+  var photoHint=approvedPhoto?'Photo ✓':(photoCount>0?photoCount+' photographer'+(photoCount>1?'s':''):'');
+  sh('hint-vendors',[djHint,photoHint].filter(Boolean).join(' · '));
   // hint-budget handled by syncBudgetStat()
   sh('hint-tasks',taskTotal>0?`${taskDone}/${taskTotal} complete (${taskPct}%)`:'No tasks yet');
-  sh('hint-notes',noteCount>0?noteCount+' note'+(noteCount!==1?'s':'')+' from the team':'No notes yet');
+  if(noteCount>0){
+    var lastNote=_s.notes[0];
+    var lastNoteHint=noteCount+' note'+(noteCount!==1?'s':'')+' · Last: '+lastNote.author+' '+lastNote.date;
+    sh('hint-notes',lastNoteHint);
+  } else {
+    sh('hint-notes','No notes yet');
+  }
 
   updateHeaderLocation();
+  checkNotesNew();
 
   // Planning Status — owner-aware, filterable
   const party=new Date('2026-11-07');
@@ -1847,18 +1923,24 @@ function mergeData(data){
     }
     if(data.budget&&(data.budget.categories||data.budget.total!==undefined)){
       _s.budget={total:data.budget.total||'',categories:Array.isArray(data.budget.categories)?data.budget.categories:defaultBudget()};
-      // Populate the totalBudget input field
       sv('totalBudget',_s.budget.total||'');
+      // Immediately sync stat card
+      syncBudgetStat();
     }
     if(data.guests&&Array.isArray(data.guests))_s.guests=data.guests;
     if(data.tasks&&Array.isArray(data.tasks)&&data.tasks.length)_s.tasks=data.tasks;
     if(data.notes&&Array.isArray(data.notes))_s.notes=data.notes;
+    if(data.changelog&&Array.isArray(data.changelog))_s.changelog=data.changelog;
   }catch(e){console.error('mergeData error:',e);}
 }
 
 function bootApp(status){
   // status: 'cloud' | 'local' | 'offline'
   if(!_s.tasks.length)_s.tasks=defaultTasks();
+  // Show splash if no current user selected
+  if(!_currentUser){
+    renderSplash();
+  }
   // Set last updated from saved state if available
   const ts=document.getElementById('lastUpdated');
   if(ts){
@@ -1887,6 +1969,16 @@ function bootApp(status){
   renderAllVendors();
   renderActivities();
   updateHeaderLocation();
+  // Event delegation for photo delete buttons on venue cards
+  var vl=document.getElementById('venueList');
+  if(vl){
+    vl.onclick=function(ev){
+      var btn=ev.target.closest('[data-venue-id][data-photo-idx]');
+      if(!btn)return;
+      ev.preventDefault();
+      deleteVenuePhoto(btn.getAttribute('data-venue-id'),parseInt(btn.getAttribute('data-photo-idx')));
+    };
+  }
 }
 
 
@@ -1943,6 +2035,213 @@ function renderActivities(){
     else if(btn.getAttribute('data-action')==='remove')removeActivity(idx);
   };
 }
+
+// ══════════════════════════════════════════
+// CURRENT USER (set by splash screen)
+// ══════════════════════════════════════════
+var _currentUser = '';
+var _currentUserColor = 'all';
+
+const AVATARS = {
+  cindy: {emoji:'🍽️', color:'cindy'},
+  sue:   {emoji:'🌸',  color:'sue'},
+  corey: {emoji:'📋',  color:'corey'},
+};
+
+function getAvatarForOrg(org) {
+  // Match by color key or name
+  if(AVATARS[org.color]) return AVATARS[org.color].emoji;
+  return '👤';
+}
+
+function renderSplash(){
+  var grid=document.getElementById('avatarGrid');
+  if(!grid)return;
+  var orgs=_s.orgs&&_s.orgs.length?_s.orgs:[
+    {id:'cindy',name:'Cindy / Drew',resp:'Venue · F&B · Entertainment',color:'cindy'},
+    {id:'sue',  name:'Sue',resp:'Decorations',color:'sue'},
+    {id:'corey',name:'Corey',resp:'Guest List · Day-of',color:'corey'}
+  ];
+  var html='';
+  orgs.forEach(function(org){
+    var emoji=getAvatarForOrg(org);
+    var c=orgColors[org.color]||orgColors.all;
+    html+='<div class="avatar-card" data-name="'+org.name+'" data-color="'+org.color+'" style="border-color:'+c.border+';background:'+c.bg+';">';
+    html+='<div class="avatar-emoji">'+emoji+'</div>';
+    html+='<div class="avatar-name" style="color:'+c.color+';">'+org.name+'</div>';
+
+    html+='</div>';
+  });
+  grid.innerHTML=html;
+  grid.onclick=function(ev){
+    var card=ev.target.closest('.avatar-card');
+    if(!card)return;
+    selectUser(card.getAttribute('data-name'),card.getAttribute('data-color'));
+  };
+}
+
+function selectUser(name, colorKey) {
+  _currentUser = name;
+  _currentUserColor = colorKey;
+  var splash = document.getElementById('splashScreen');
+  if(splash) splash.classList.add('hidden');
+  addChangelogEntry('Logged in', 'Session started');
+  populateOrgDropdowns();
+  updateDashboard();
+  syncBudgetStat();
+  checkNotesNew();
+}
+
+// ══════════════════════════════════════════
+// CHANGELOG
+// ══════════════════════════════════════════
+function addChangelogEntry(section, description) {
+  if(!_currentUser) return;
+  if(!_s.changelog) _s.changelog = [];
+  var now = new Date();
+  var entry = {
+    id: uid(),
+    user: _currentUser,
+    userColor: _currentUserColor,
+    section: section,
+    description: description,
+    timestamp: now.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true})
+  };
+  _s.changelog.unshift(entry);
+  // Keep last 200 entries
+  if(_s.changelog.length > 200) _s.changelog = _s.changelog.slice(0, 200);
+}
+
+function renderChangelog() {
+  var el = document.getElementById('changelogList');
+  if(!el) return;
+  var log = _s.changelog || [];
+  if(!log.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-text">No changes recorded yet.</div></div>';
+    return;
+  }
+  var html = '';
+  log.forEach(function(entry) {
+    var c = orgColors[entry.userColor] || orgColors.all;
+    html += '<div class="cl-item">';
+    html += '<div class="cl-who"><span class="owner-tag owner-'+entry.userColor+'">'+entry.user+'</span></div>';
+    html += '<div class="cl-what">'+entry.section+': '+entry.description+'</div>';
+    html += '<div class="cl-when">'+entry.timestamp+'</div>';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+
+// ══════════════════════════════════════════
+// VENUE PHOTO UPLOAD (ImgBB)
+// ══════════════════════════════════════════
+var _pendingVenuePhotos = []; // URLs accumulated before save
+
+function uploadVenuePhotos() {
+  var files = document.getElementById('venuePhotoInput').files;
+  if(!files || !files.length) return;
+  var key = 'b8a406407bff8485ff0613287eb6f392';
+  var status = document.getElementById('venuePhotoStatus');
+  status.textContent = 'Uploading '+files.length+' photo(s)…';
+  var uploaded = 0;
+  Array.from(files).forEach(function(file) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var b64 = e.target.result.split(',')[1];
+      var form = new FormData();
+      form.append('image', b64);
+      fetch('https://api.imgbb.com/1/upload?key='+key, {method:'POST', body:form})
+        .then(function(r){ return r.json(); })
+        .then(function(data) {
+          if(data.data && data.data.url) {
+            _pendingVenuePhotos.push(data.data.url);
+            renderVenuePhotoPreview(_pendingVenuePhotos);
+            uploaded++;
+            status.textContent = uploaded+' of '+files.length+' uploaded ✓';
+          }
+        })
+        .catch(function(err) {
+          status.textContent = '❌ Upload failed: '+err.message;
+        });
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderVenuePhotoPreview(photos) {
+  var el = document.getElementById('venuePhotoPreview');
+  if(!el) return;
+  if(!photos.length){el.innerHTML='';return;}
+  var html='<div style="font-family:Helvetica Neue,sans-serif;font-size:10px;color:var(--text-muted);width:100%;margin-bottom:4px;">'+photos.length+' photo'+(photos.length!==1?'s':'')+' — tap ✕ to remove</div>';
+  photos.forEach(function(url,i){
+    html+='<div style="position:relative;display:inline-block;">'
+      +'<img src="'+url+'" style="width:90px;height:68px;object-fit:cover;border-radius:8px;border:2px solid var(--gold);">'
+      +'<button data-pending-idx="'+i+'" style="position:absolute;top:-6px;right:-6px;background:var(--danger);color:white;border:none;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;line-height:1;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,0.5);">✕</button>'
+      +'</div>';
+  });
+  el.innerHTML=html;
+  el.onclick=function(ev){
+    var btn=ev.target.closest('[data-pending-idx]');
+    if(!btn)return;
+    removePendingPhoto(parseInt(btn.getAttribute('data-pending-idx')));
+  };
+}
+
+function removePendingPhoto(idx) {
+  _pendingVenuePhotos.splice(idx, 1);
+  renderVenuePhotoPreview(_pendingVenuePhotos);
+}
+
+function renderVenueCardPhotos(venueId, photos) {
+  if(!photos || !photos.length) return '';
+  return '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">'
+    + photos.map(function(url, i){
+        return '<div style="position:relative;display:inline-block;">'
+          +'<a href="'+url+'" target="_blank"><img src="'+url+'" style="width:72px;height:54px;object-fit:cover;border-radius:6px;border:1px solid var(--border);display:block;"></a>'
+          +'<button data-venue-id="'+venueId+'" data-photo-idx="'+i+'" style="position:absolute;top:-5px;right:-5px;background:var(--danger);color:white;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;line-height:1;font-weight:700;" title="Remove photo">✕</button>'
+          +'</div>';
+      }).join('')
+    + '</div>';
+}
+function deleteVenuePhoto(venueId, photoIdx){
+  var venue=_s.venues.find(function(v){return v.id===venueId;});
+  if(!venue||!venue.photos)return;
+  if(!confirm('Remove this photo?'))return;
+  venue.photos.splice(photoIdx,1);
+  addChangelogEntry('Venues','Removed photo from '+venue.name);
+  save();renderVenues();
+}
+
+
+function markNotesSeen(){
+  if(!_currentUser)return;
+  var key='notes_seen_'+_currentUser;
+  localStorage.setItem(key,new Date().toISOString());
+  var badge=document.getElementById('notesNewBadge');
+  if(badge)badge.style.display='none';
+}
+function checkNotesNew(){
+  if(!_currentUser||!_s.notes||!_s.notes.length)return;
+  var key='notes_seen_'+_currentUser;
+  var lastSeen=localStorage.getItem(key);
+  if(!lastSeen){
+    // Never seen — show badge if there are notes not by this user
+    var othersNotes=_s.notes.filter(function(n){return n.author!==_currentUser;});
+    var badge=document.getElementById('notesNewBadge');
+    if(badge)badge.style.display=othersNotes.length?'':'none';
+    return;
+  }
+  // Show badge if any note was added after last seen (by someone else)
+  var lastSeenDate=new Date(lastSeen);
+  var hasNew=_s.notes.some(function(n){
+    if(n.author===_currentUser)return false;
+    // Parse note date — notes store formatted strings, check if newer
+    try{return new Date(n.timestamp||n.date)>lastSeenDate;}catch(e){return false;}
+  });
+  var badge=document.getElementById('notesNewBadge');
+  if(badge)badge.style.display=hasNew?'':'none';
+}
+
 // Browser back/forward button support
 window.addEventListener('popstate',function(e){
   var section=(e.state&&e.state.section)||'dashboard';
@@ -1990,5 +2289,62 @@ async function init(){
 }
 init();
 </script>
+<!-- Changelog Modal -->
+<div class="modal-overlay" id="changelogModal">
+  <div class="modal" style="max-height:80vh;">
+    <div class="modal-header">
+      <div class="modal-title">📋 Change Log</div>
+      <button class="modal-close" onclick="closeModal('changelogModal')">✕</button>
+    </div>
+    <p style="font-family:'Helvetica Neue',sans-serif;font-size:12px;color:var(--text-muted);margin-bottom:12px;">All changes made by organizers, newest first.</p>
+    <div id="changelogList"><div class="empty"><div class="empty-text">No changes recorded yet.</div></div></div>
+  </div>
+</div>
+
+<!-- Wiki Modal -->
+<div class="modal-overlay" id="wikiModal">
+  <div class="modal" style="max-height:85vh;">
+    <div class="modal-header">
+      <div class="modal-title">📖 How to Use This Planner</div>
+      <button class="modal-close" onclick="closeModal('wikiModal')">✕</button>
+    </div>
+    <div style="font-family:'Helvetica Neue',sans-serif;font-size:13px;line-height:1.7;color:var(--text);">
+      <p style="color:var(--text-muted);font-size:12px;margin-bottom:16px;">A quick guide for Cindy/Drew, Sue, and Corey.</p>
+
+      <div style="margin-bottom:14px;"><div style="font-weight:700;color:var(--gold-dark);margin-bottom:4px;">🏠 Home Screen</div>
+      The home screen shows your countdown, guest count, task progress, and total budget at a glance. Tap any stat card to jump to that section. Tap a nav button to open a section.</div>
+
+      <div style="margin-bottom:14px;"><div style="font-weight:700;color:var(--gold-dark);margin-bottom:4px;">👤 Roles</div>
+      Add or edit the three organizers. Check the responsibilities that apply to each person. These names appear throughout the app — in tasks, planning status, and the change log.</div>
+
+      <div style="margin-bottom:14px;"><div style="font-weight:700;color:var(--gold-dark);margin-bottom:4px;">📍 Venues</div>
+      Add multiple venues as you research. Fill in contact info, cost, and notes for each. When you've decided, tap <strong>✓ Approve</strong> — it highlights the winner and updates the header automatically. You can upload photos for each venue.</div>
+
+      <div style="margin-bottom:14px;"><div style="font-weight:700;color:var(--gold-dark);margin-bottom:4px;">👥 Guests</div>
+      Add guests manually or import a CSV file. The CSV must have a header row with columns: Name, Phone, Email, Party Size, RSVP Status, Dietary Need, Wedding Song. Download the sample CSV for the correct format. Maximum 50 guests.</div>
+
+      <div style="margin-bottom:14px;"><div style="font-weight:700;color:var(--gold-dark);margin-bottom:4px;">🍽️ Menu</div>
+      Three tabs: Food (catering style, caterer details, menu items), Bar (bar type, bartender, drink selections), and Desserts (cake details, dessert table). Fill in as details are confirmed.</div>
+
+      <div style="margin-bottom:14px;"><div style="font-weight:700;color:var(--gold-dark);margin-bottom:4px;">🎵 Vendors</div>
+      Four tabs: DJ (add multiple options, approve the winner), Photography, Decorations (Sue's domain — fill in the plan), and Fun (add activities from the dropdown, build a run of show).</div>
+
+      <div style="margin-bottom:14px;"><div style="font-weight:700;color:var(--gold-dark);margin-bottom:4px;">💰 Budget</div>
+      Enter your Total Budget at the top — this drives the Budgeted stat on the home screen. Then fill in Estimated and Paid amounts per category. The progress bar shows how much of the budget is spent.</div>
+
+      <div style="margin-bottom:14px;"><div style="font-weight:700;color:var(--gold-dark);margin-bottom:4px;">✅ Tasks</div>
+      Pre-loaded with common tasks. Add your own, assign to an organizer, set a due date. Use filters to view by person or category. Tasks are color-coded: red = overdue, amber = due soon, blue = upcoming.</div>
+
+      <div style="margin-bottom:14px;"><div style="font-weight:700;color:var(--gold-dark);margin-bottom:4px;">📝 Notes</div>
+      A shared notepad for the team. Add ideas, vendor call summaries, or decisions. Each note is tagged with who wrote it and when.</div>
+
+      <div style="margin-bottom:14px;"><div style="font-weight:700;color:var(--gold-dark);margin-bottom:4px;">🔄 Syncing</div>
+      All changes save automatically to the cloud (JSONBin) and locally on your device. The "Last Updated" bar shows when data was last changed. If the cloud is unavailable, data saves locally and syncs when reconnected.</div>
+
+      <div><div style="font-weight:700;color:var(--gold-dark);margin-bottom:4px;">📋 Change Log</div>
+      Every save is recorded with your name, what section was changed, and the timestamp. Access the Change Log from the button at the bottom of the home screen.</div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
