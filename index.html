@@ -579,7 +579,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="card">
     <div class="card-title"><span>💰</span> Budget Overview</div>
     <label>Total Budget ($)</label>
-    <input type="text" inputmode="decimal" id="totalBudget" placeholder="e.g. 6000" oninput="debounce('budget')">
+    <input type="text" inputmode="decimal" id="totalBudget" placeholder="e.g. 6000" oninput="syncBudgetStat();debounce('budget')">
     <div style="margin-top:14px;">
       <div style="display:grid;grid-template-columns:1fr 90px 90px 28px;gap:6px;padding:0 0 6px;border-bottom:1px solid var(--border);margin-bottom:2px;">
         <div style="font-size:10px;text-transform:uppercase;color:var(--text-muted);font-weight:700;">Category</div>
@@ -842,6 +842,14 @@ async function jbSave(){
 let _dbt={};
 function debounce(key,delay=900){clearTimeout(_dbt[key]);_dbt[key]=setTimeout(()=>{collectFields(key);jbSave();},delay);}
 function save(){stampLastUpdated();lsSave(_s);jbSave();}
+function syncBudgetStat(){
+  var inp=document.getElementById('totalBudget');
+  var val=inp?parseFloat(inp.value)||0:parseFloat((_s.budget&&_s.budget.total)||0)||0;
+  var sb=document.getElementById('stat-budget');
+  if(sb)sb.textContent=val?'$'+(val>=1000?(val/1000).toFixed(1)+'k':val.toFixed(0)):'$0';
+  var hintVal=val?'Total budget: $'+val.toLocaleString():'No budget set yet';
+  sh('hint-budget',hintVal);
+}
 function flash(){
   const el=document.getElementById('savedFlash');
   el.classList.add('show');
@@ -941,7 +949,7 @@ function switchSection(name,pushState){
   const bar=document.getElementById('backBar');
   if(name==='dashboard'){bar.classList.remove('visible');}
   else{bar.classList.add('visible');document.getElementById('backBarTitle').textContent=sectionTitles[name]||'';}
-  if(name==='dashboard')updateDashboard();
+  if(name==='dashboard'){updateDashboard();syncBudgetStat();}
   if(name==='resp')renderOrgs();
   if(name==='venue'){renderVenues();renderRespBanner('venue');}
   if(name==='guests'){renderGuests();renderRespBanner('guest');}
@@ -974,9 +982,7 @@ function collectFields(key){
     _s.budget.total=v('totalBudget');
     updateBudgetTotals();
     // Update nav hint immediately
-    var bAmt=parseFloat(_s.budget.total)||0;
-    var bEst=(_s.budget.categories||[]).reduce(function(a,c){return a+(parseFloat(c.estimated)||0);},0);
-    sh('hint-budget',bAmt>0?'Total: $'+bAmt.toLocaleString()+(bEst>0?' · $'+bEst.toLocaleString()+' est':''):bEst>0?'$'+bEst.toLocaleString()+' estimated':'No budget set yet');
+    var bAmt=parseFloat(_s.budget.total)||0;sh('hint-budget',bAmt>0?'Total budget: $'+bAmt.toLocaleString():'No budget set yet');
     save();
   }
 }
@@ -1587,10 +1593,8 @@ function updateBudgetTotals(){
   var tp=document.getElementById('budgetTotalPaid');
   if(te)te.textContent='$'+totalEst.toLocaleString();
   if(tp)tp.textContent='$'+totalSpent.toLocaleString();
-  // Stat card shows Total Budget if set, else sum of estimates
-  var displayAmt=budgetAmt||totalEst;
   var sb=document.getElementById('stat-budget');
-  if(sb)sb.textContent='$'+(displayAmt>=1000?(displayAmt/1000).toFixed(1)+'k':displayAmt.toFixed(0));
+  if(sb){var bt=parseFloat((_s.budget&&_s.budget.total)||0);sb.textContent=bt?'$'+(bt>=1000?(bt/1000).toFixed(1)+'k':bt.toFixed(0)):'$0';}
   // Also update progress bar if it exists
   var budget=budgetAmt;
   var pct=budget?Math.min(100,Math.round(totalSpent/budget*100)):0;
@@ -1702,10 +1706,8 @@ function updateDashboard(){
   renderTasks();
   const cats=_s.budget?.categories||[];
   const est=cats.reduce((a,c)=>a+(parseFloat(c.estimated)||0),0);
-  const budgetTotal=parseFloat(_s.budget?.total)||0;
-  const displayAmt=budgetTotal||est;
   const sbEl=document.getElementById('stat-budget');
-  if(sbEl)sbEl.textContent='$'+(displayAmt>=1000?(displayAmt/1000).toFixed(1)+'k':displayAmt.toFixed(0));
+  if(sbEl){const bt=parseFloat(_s.budget?.total)||0;sbEl.textContent=bt?'$'+(bt>=1000?(bt/1000).toFixed(1)+'k':bt.toFixed(0)):'$0';}
 
   // Nav button hints
   const approvedVenue=_s.venues.find(v=>v.status==='approved');
@@ -1723,7 +1725,7 @@ function updateDashboard(){
   sh('hint-guests',guestTotal>0?`${guestTotal}/50 added · ${guestConfirmed} confirmed`:'No guests added yet');
   sh('hint-menu',_s.menu?.catererName?'Caterer: '+_s.menu.catererName:'Food · Bar · Desserts');
   sh('hint-vendors',[approvedDJ?'DJ ✓':'No DJ yet',approvedPhoto?'Photo ✓':''].filter(x=>x).join(' · ')||'DJ · Photo · Decor · Fun');
-  sh('hint-budget',budgetTotal>0?'Total: $'+budgetTotal.toLocaleString()+(est>0?' · $'+est.toLocaleString()+' est':''):est>0?'$'+est.toLocaleString()+' estimated':'No budget set yet');
+  // hint-budget handled by syncBudgetStat()
   sh('hint-tasks',taskTotal>0?`${taskDone}/${taskTotal} complete (${taskPct}%)`:'No tasks yet');
   sh('hint-notes',noteCount>0?noteCount+' note'+(noteCount!==1?'s':'')+' from the team':'No notes yet');
 
@@ -1843,7 +1845,11 @@ function mergeData(data){
       _s.evite=data.evite;
       eviteFields.forEach(f=>{const k=f.replace('evite','').replace(/^./,c=>c.toLowerCase());const val=data.evite[k]??data.evite[f];if(val!=null)sv(f,val);});
     }
-    if(data.budget&&data.budget.categories)_s.budget=data.budget;
+    if(data.budget&&(data.budget.categories||data.budget.total!==undefined)){
+      _s.budget={total:data.budget.total||'',categories:Array.isArray(data.budget.categories)?data.budget.categories:defaultBudget()};
+      // Populate the totalBudget input field
+      sv('totalBudget',_s.budget.total||'');
+    }
     if(data.guests&&Array.isArray(data.guests))_s.guests=data.guests;
     if(data.tasks&&Array.isArray(data.tasks)&&data.tasks.length)_s.tasks=data.tasks;
     if(data.notes&&Array.isArray(data.notes))_s.notes=data.notes;
@@ -1871,6 +1877,8 @@ function bootApp(status){
   }
   populateOrgDropdowns();
   updateDashboard();
+  updateBudgetTotals();
+  syncBudgetStat();
   renderTasks();
   renderGuests();
   renderNotes();
@@ -1962,6 +1970,8 @@ async function init(){
     // Re-render with cloud data
     populateOrgDropdowns();
     updateDashboard();
+    updateBudgetTotals();
+    syncBudgetStat();
     renderTasks();
     renderGuests();
     renderNotes();
